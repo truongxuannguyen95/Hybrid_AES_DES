@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "339150045600",
+    "firebase_url": "https://hybrid-aes-des.firebaseio.com",
+    "project_id": "hybrid-aes-des",
+    "storage_bucket": "hybrid-aes-des.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339150045600:android:a81b4acd2f1dbbed",
+        "android_client_info": {
+          "package_name": "com.example.nguyen.hybrid_aes_des"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "339150045600-d95tg35lltm28eijfifs5c9u5mk9r1sp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtPMxjTxNqr8iwP0RTBkI9I4zbGFlY9nw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
