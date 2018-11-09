@@ -149,23 +149,16 @@ public class Decrypt extends Fragment {
         if (requestCode == 0) {
             uri = data.getData();
             filePath = uri.getPath();
-            File file = new File(filePath);
-            if (!file.exists()) {
-                Utilities.showAlertDialog("Chọn file thất bại", "File này chưa được liên kết với bộ nhớ\nVui lòng copy file này vào 1 thư mục bất kỳ rồi tiến hành mã hóa", getContext());
-                tvFileName.setText(null);
-                fileNameDecrypt = "";
-            } else {
-                String fileName = filePath;
-                if (filePath.contains("/")) {
-                    fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
-                }
-                fileNameDecrypt = fileName;
-                if (fileName.length() > 24) {
-                    fileName = fileName.substring(0, 20) + "...";
-                }
-                tvFileName.setText(fileName);
-                tvFileName.setTextColor(Color.BLACK);
+            String fileName = filePath;
+            if (filePath.contains("/")) {
+                fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
             }
+            fileNameDecrypt = fileName;
+            if (fileName.length() > 24) {
+                fileName = fileName.substring(0, 20) + "...";
+            }
+            tvFileName.setText(fileName);
+            tvFileName.setTextColor(Color.BLACK);
         }
     }
 
@@ -201,6 +194,7 @@ public class Decrypt extends Fragment {
                 String oldKey = fileData.substring(0, 32);
                 oldKey = Hybrid_AES_DES.decrypt("TruongXuanNguyen", oldKey);
                 key = edtKeyDecrypt.getText().toString();
+                key = key + "Nguyen@2018";
                 if (UserPage.isOffile) {
                     String md5Key = Utilities.md5(key);
                     if (oldKey.equals(md5Key)) {
@@ -211,7 +205,8 @@ public class Decrypt extends Fragment {
                         for (int i = 0; i < HomePage.listKeys.size(); i++) {
                             key = HomePage.listKeys.get(i);
                             key = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
-                            String md5Key = Utilities.md5(key);
+                            key = key.trim();
+                            String md5Key = Utilities.md5(key.trim());
                             if (oldKey.equals(md5Key)) {
                                 hasKey = true;
                                 break;
@@ -226,6 +221,10 @@ public class Decrypt extends Fragment {
                 }
                 if (hasKey) {
                     fileData = fileData.substring(32);
+                    String decryptLen = fileData.substring(0, 16);
+                    decryptLen = Hybrid_AES_DES.decrypt(key, decryptLen);
+                    int len = Integer.parseInt(decryptLen.trim());
+                    fileData = fileData.substring(16);
                     fileData = Hybrid_AES_DES.decrypt(key, fileData);
                     String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
                     String rootPath = storagePath + "/Download/Decrypt";
@@ -233,7 +232,7 @@ public class Decrypt extends Fragment {
                     root.mkdirs();
                     File file = new File(rootPath + "/" + fileNameDecrypt);
                     file.createNewFile();
-                    byte[] bytess = Utilities.stringToByteArray(fileData);
+                    byte[] bytess = Utilities.stringToByteArray(fileData.substring(0, len));
                     BufferedOutputStream bos = null;
                     bos = new BufferedOutputStream(new FileOutputStream(file, false));
                     bos.write(bytess);
@@ -270,10 +269,11 @@ public class Decrypt extends Fragment {
                     edtKeyDecrypt.setText("");
                     Utilities.showAlertDialog("Giải mã thành công", "File giải mã được lưu trong thư mục\n/Download/Decrypt", getContext());
                 } else {
-                    if (UserPage.isOffile)
+                    if (UserPage.isOffile || !ckbUseKeys.isChecked())
                         Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc sai key", getContext());
                     else
                         Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc danh sách key của bạn không chứa key mã hóa file này", getContext());
+
                 }
             }
         }

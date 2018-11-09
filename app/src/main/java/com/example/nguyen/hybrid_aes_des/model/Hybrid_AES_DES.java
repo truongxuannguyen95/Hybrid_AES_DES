@@ -60,7 +60,6 @@ public class Hybrid_AES_DES {
                 result += (Utilities.byteArrayToString((stDes.decrypt(cipher_DES_1))));
                 result += (Utilities.byteArrayToString((ndDes.decrypt(cipher_DES_2))));
             }
-            result = result.trim();
         }
         return result;
     }

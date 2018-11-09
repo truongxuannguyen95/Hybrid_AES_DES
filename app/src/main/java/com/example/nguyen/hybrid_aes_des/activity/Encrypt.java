@@ -101,7 +101,7 @@ public class Encrypt extends Fragment {
         ckbRandom.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(buttonView.isPressed()) {
+                if (buttonView.isPressed()) {
                     if (isChecked) {
                         edtKeyEncrypt.setText(Utilities.rand());
                         edtKeyEncrypt.setError(null);
@@ -127,9 +127,9 @@ public class Encrypt extends Fragment {
             public void onClick(View view) {
                 if (fileNameEncrypt.length() == 0) {
                     Utilities.showAlertDialog("Thông báo", "Vui lòng chọn file để mã hóa", getContext());
-                } else if(edtKeyEncrypt.getText().toString().length() < 8) {
+                } else if (edtKeyEncrypt.getText().toString().length() < 8) {
                     edtKeyEncrypt.setError("Key phải từ 8 ký tự trở lên");
-                } else if(Utilities.isOnline(getContext())){
+                } else if (Utilities.isOnline(getContext())) {
                     new MyAsyncTask().execute();
                 } else {
                     Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet\nVui lòng kiểm tra kết nối internet", getContext());
@@ -143,17 +143,16 @@ public class Encrypt extends Fragment {
     public void onActivityResult(int requestCode, int resultCode,
                                  Intent data) {
         if (resultCode != getActivity().RESULT_OK) return;
-        if(requestCode == 0)
-        {
+        if (requestCode == 0) {
             uri = data.getData();
             filePath = uri.getPath();
             String fileName = filePath;
-            if(filePath.contains("/")) {
+            if (filePath.contains("/")) {
                 fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
             }
             fileNameEncrypt = fileName;
-            if(fileName.length() > 24) {
-                fileName = fileName.substring(0,20) + "...";
+            if (fileName.length() > 24) {
+                fileName = fileName.substring(0, 20) + "...";
             }
             tvFileName.setText(fileName);
             tvFileName.setTextColor(Color.BLACK);
@@ -166,16 +165,16 @@ public class Encrypt extends Fragment {
         private ProgressDialog progressDialog;
 
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog( getContext() );
-            progressDialog.setIndeterminate( true );
+            progressDialog = new ProgressDialog(getContext());
+            progressDialog.setIndeterminate(true);
             progressDialog.setCancelable(false);
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage( "Đang mã hóa file..." );
+            progressDialog.setMessage("Đang mã hóa file...");
             progressDialog.show();
         }
 
         @Override
-        protected String doInBackground( String... params ) {
+        protected String doInBackground(String... params) {
             byte[] bytes = new byte[32768];
             int nRead;
             try {
@@ -187,8 +186,8 @@ public class Encrypt extends Fragment {
                 buffer.flush();
                 String fileData = Utilities.byteArrayToString(buffer.toByteArray());
                 String key = edtKeyEncrypt.getText().toString();
+                key = key + "Nguyen@2018";
                 fileData = Hybrid_AES_DES.encrypt(key, fileData);
-
                 String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
                 String rootPath = storagePath + "/Download/Encrypt";
                 File root = new File(rootPath);
@@ -196,20 +195,20 @@ public class Encrypt extends Fragment {
                 File file = new File(rootPath + "/" + fileNameEncrypt);
                 file.createNewFile();
                 String encryptKey = "";
-                if(!UserPage.isOffile) {
+                if (!UserPage.isOffile) {
                     encryptKey = Hybrid_AES_DES.encrypt("TruongXuanNguyen", key);
                     FirebaseAuth mAuth = FirebaseAuth.getInstance();
                     FirebaseUser currentUser = mAuth.getCurrentUser();
                     String owner = currentUser.getUid();
                     DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
                     boolean flag = false;
-                    for(int i=0; i<HomePage.listKeys.size(); i++) {
-                        if(encryptKey.equals(HomePage.listKeys.get(i))) {
+                    for (int i = 0; i < HomePage.listKeys.size(); i++) {
+                        if (encryptKey.equals(HomePage.listKeys.get(i))) {
                             flag = true;
                             break;
                         }
                     }
-                    if(!flag) {
+                    if (!flag) {
                         mData.child("users").child(owner).push().setValue(encryptKey)
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -222,20 +221,22 @@ public class Encrypt extends Fragment {
                 }
                 String md5Key = Utilities.md5(key);
                 encryptKey = Hybrid_AES_DES.encrypt("TruongXuanNguyen", md5Key);
-                byte[] bytess = Utilities.stringToByteArray(encryptKey + fileData);
+                int len = buffer.size();
+                String encryptLen = Hybrid_AES_DES.encrypt(key, len + "");
+                byte[] bytess = Utilities.stringToByteArray(encryptKey + encryptLen + fileData);
                 BufferedOutputStream bos = null;
                 bos = new BufferedOutputStream(new FileOutputStream(file, false));
                 bos.write(bytess);
                 bos.flush();
                 bos.close();
             } catch (FileNotFoundException e) {
-                if ( progressDialog != null && progressDialog.isShowing() ) {
+                if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                     Utilities.showAlertDialog("Mã hóa thất bại", "File này không còn tồn tại", getContext());
                 }
                 e.printStackTrace();
             } catch (IOException e) {
-                if ( progressDialog != null && progressDialog.isShowing() ) {
+                if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                     Utilities.showAlertDialog("Mã hóa thất bại", "Đã xảy ra lỗi trong quá trình đọc file", getContext());
                 }
@@ -245,13 +246,13 @@ public class Encrypt extends Fragment {
         }
 
         @Override
-        public void onPostExecute( String result ) {
+        public void onPostExecute(String result) {
 
             tvFileName.setText("");
             edtKeyEncrypt.setText("");
             fileNameEncrypt = "";
             ckbRandom.setChecked(false);
-            if ( progressDialog != null && progressDialog.isShowing() ) {
+            if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
                 Utilities.showAlertDialog("Mã hóa thành công", "File mã hóa được lưu trong thư mục\n/Download/Encrypt", getContext());
             }
