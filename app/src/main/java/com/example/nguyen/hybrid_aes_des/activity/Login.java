@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.nguyen.hybrid_aes_des.R;
 import com.example.nguyen.hybrid_aes_des.Utilities;
@@ -23,8 +22,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.concurrent.Executor;
 
 public class Login extends Fragment {
 
@@ -153,7 +150,7 @@ public class Login extends Fragment {
                                 editor.putInt("length", 0);
                             }
                             editor.commit();
-                            Login_SignUp.isOffile = false;
+                            UserPage.isOffile = false;
                             getActivity().finish();
                             startActivity(new Intent(getContext(), HomePage.class));
                         } else {

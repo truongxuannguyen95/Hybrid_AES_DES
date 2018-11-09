@@ -1,51 +1,51 @@
 package com.example.nguyen.hybrid_aes_des.activity;
 
 import com.example.nguyen.hybrid_aes_des.R;
-import com.example.nguyen.hybrid_aes_des.Utilities;
 import com.example.nguyen.hybrid_aes_des.adapter.UserPager;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 
 
-public class Login_SignUp extends AppCompatActivity{
+public class UserPage extends AppCompatActivity{
 
     public static boolean isOffile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_signup);
+        setContentView(R.layout.user_page);
+        getPermissions();
         showTab();
         Button btnOffline = findViewById(R.id.btnOffline);
         btnOffline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(Login_SignUp.this);
-                builder.setTitle("Bạn có chắc muốn truy cập Offline");
-                builder.setMessage("Sử dụng Offline sẽ không lưu key khi sử dụng mã hóa");
+                final AlertDialog.Builder builder = new AlertDialog.Builder(UserPage.this);
+                builder.setTitle("Truy cập OFFLINE");
+                builder.setMessage("Sử dụng OFFLINE sẽ không lưu key khi sử dụng mã hóa");
                 builder.setCancelable(false);
                 builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         isOffile = true;
                         finish();
-                        startActivity(new Intent(Login_SignUp.this, HomePage.class));
+                        startActivity(new Intent(UserPage.this, HomePage.class));
                     }
                 });
                 builder.setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
@@ -103,6 +103,27 @@ public class Login_SignUp extends AppCompatActivity{
 
             }
         });
+    }
+
+    public void getPermissions(){
+        ActivityCompat.requestPermissions(UserPage.this,
+                new String[] {
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                },
+                1);
+    }
+
+    @TargetApi(23)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if(grantResults[0] != PackageManager.PERMISSION_GRANTED || grantResults[1] != PackageManager.PERMISSION_GRANTED) {
+                    finish();
+                }
+                return;
+        }
     }
 
 }

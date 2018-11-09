@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ListKeys"
+    android:background="@color/colorWhite">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Đang kiểm tra dữ liệu..."
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textColor="#8461bc"
+            android:visibility="gone"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:background="@color/colorLine">
+            <CheckBox
+                android:id="@+id/ckbShowKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Show key"
+                android:checked="false"
+                android:textSize="16sp"
+                android:textColor="#63356c"
+                android:buttonTint="#63356c"
+                android:layout_margin="5dp"/>
+        </LinearLayout>
+        <ListView
+            android:id="@+id/lvKeys"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </LinearLayout>
+
+</FrameLayout>

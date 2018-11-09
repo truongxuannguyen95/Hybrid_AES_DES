@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.Decrypt"
+    android:background="@color/colorWhite">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chọn file để giải mã"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tvFileName"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:hint="Chưa có file nào được chọn..."
+                android:singleLine="true"
+                android:textSize="16sp"
+                android:textColor="#282525"
+                android:padding="5dp"
+                android:layout_marginRight="55dp"
+                android:background="@drawable/corners"/>
+            <Button
+                android:id="@+id/btnChooseFile"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@drawable/icon_search"
+                android:layout_marginLeft="-45dp"/>
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nhập key để giải mã dữ liệu"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:layout_marginTop="20dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="3dp"
+            android:orientation="horizontal"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+            <EditText
+                android:id="@+id/edtKeyDecrypt"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:hint="Nhập key tại đây"
+                android:singleLine="true"
+                android:textColorHint="#bcb3b3"
+                android:textSize="16sp"
+                android:textCursorDrawable="@drawable/cursor_key"
+                android:textColor="#000000"
+                android:padding="5dp"
+                android:layout_marginRight="55dp"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/corners"/>
+        </LinearLayout>
+        <CheckBox
+            android:id="@+id/ckbUseKeys"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sử dụng list keys"
+            android:checked="false"
+            android:textSize="16sp"
+            android:textColor="#c412d4"
+            android:buttonTint="#c412d4"
+            android:layout_marginLeft="-7dp"/>
+
+        <Button
+            android:id="@+id/btnDecrypt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Giải mã"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/btn_cyan"/>
+    </LinearLayout>
+
+</FrameLayout>
