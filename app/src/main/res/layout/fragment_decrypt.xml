@@ -33,6 +33,7 @@
                 android:layout_height="35dp"
                 android:hint="Chưa có file nào được chọn..."
                 android:singleLine="true"
+                android:clickable="true"
                 android:textSize="16sp"
                 android:textColor="#282525"
                 android:padding="5dp"

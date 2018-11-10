@@ -95,12 +95,14 @@ public class Encrypt extends Fragment {
         btnChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                intent = Intent.createChooser(intent, "Chọn file để mã hóa");
-                startActivityForResult(intent, 0);
+                chooseFile();
+            }
+        });
+
+        tvFileName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseFile();
             }
         });
 
@@ -143,6 +145,15 @@ public class Encrypt extends Fragment {
             }
         });
         return view;
+    }
+
+    private void chooseFile(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent = Intent.createChooser(intent, "Chọn file để mã hóa");
+        startActivityForResult(intent, 0);
     }
 
     @Override

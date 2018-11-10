@@ -87,12 +87,14 @@ public class Decrypt extends Fragment {
         btnChooseFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                intent = Intent.createChooser(intent, "Chọn file để giải mã");
-                startActivityForResult(intent, 0);
+                chooseFile();
+            }
+        });
+
+        tvFileName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseFile();
             }
         });
 
@@ -145,8 +147,16 @@ public class Decrypt extends Fragment {
                 }
             }
         });
-
         return view;
+    }
+
+    private void chooseFile(){
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent = Intent.createChooser(intent, "Chọn file để giải mã");
+        startActivityForResult(intent, 0);
     }
 
     @Override
@@ -230,57 +240,58 @@ public class Decrypt extends Fragment {
                 boolean hasKey = false;
                 String key = "";
                 String fileData = Utilities.byteArrayToString(buffer.toByteArray());
-                String oldKey = fileData.substring(0, 32);
-                oldKey = Hybrid_AES_DES.decrypt("TruongXuanNguyen", oldKey);
-                key = edtKeyDecrypt.getText().toString();
-                key = key + "Nguyen@2018";
-                if (UserPage.isOffile) {
-                    String md5Key = Utilities.md5(key);
-                    if (oldKey.equals(md5Key)) {
-                        hasKey = true;
-                    }
-                } else {
-                    if (ckbUseKeys.isChecked()) {
-                        for (int i = 0; i < HomePage.listKeys.size(); i++) {
-                            key = HomePage.listKeys.get(i);
-                            key = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
-                            key = key.trim();
-                            String md5Key = Utilities.md5(key.trim());
-                            if (oldKey.equals(md5Key)) {
-                                hasKey = true;
-                                break;
-                            }
-                        }
-                    } else {
+                if(fileData.length() > 32) {
+                    String oldKey = fileData.substring(0, 32);
+                    oldKey = Hybrid_AES_DES.decrypt("TruongXuanNguyen", oldKey);
+                    key = edtKeyDecrypt.getText().toString();
+                    key = key + "Nguyen@2018";
+                    if (UserPage.isOffile) {
                         String md5Key = Utilities.md5(key);
                         if (oldKey.equals(md5Key)) {
                             hasKey = true;
                         }
+                    } else {
+                        if (ckbUseKeys.isChecked()) {
+                            for (int i = 0; i < HomePage.listKeys.size(); i++) {
+                                key = HomePage.listKeys.get(i);
+                                key = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
+                                key = key.trim();
+                                String md5Key = Utilities.md5(key.trim());
+                                if (oldKey.equals(md5Key)) {
+                                    hasKey = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            String md5Key = Utilities.md5(key);
+                            if (oldKey.equals(md5Key)) {
+                                hasKey = true;
+                            }
+                        }
+                    }
+                    if (hasKey) {
+                        root.mkdirs();
+                        temp.createNewFile();
+                        fileData = fileData.substring(32);
+                        String decryptLen = fileData.substring(0, 16);
+                        decryptLen = Hybrid_AES_DES.decrypt(key, decryptLen);
+                        int len = Integer.parseInt(decryptLen.trim());
+                        fileData = fileData.substring(16);
+                        ShowProgressDialog();
+                        fileData = Hybrid_AES_DES.decrypt(key, fileData);
+                        if (!cancel) {
+                            byte[] bytess = Utilities.stringToByteArray(fileData.substring(0, len));
+                            BufferedOutputStream bos = null;
+                            bos = new BufferedOutputStream(new FileOutputStream(temp, false));
+                            bos.write(bytess);
+                            bos.flush();
+                            bos.close();
+                            flag = true;
+                        }
+                    } else {
+                        flag = false;
                     }
                 }
-                if (hasKey) {
-                    root.mkdirs();
-                    temp.createNewFile();
-                    fileData = fileData.substring(32);
-                    String decryptLen = fileData.substring(0, 16);
-                    decryptLen = Hybrid_AES_DES.decrypt(key, decryptLen);
-                    int len = Integer.parseInt(decryptLen.trim());
-                    fileData = fileData.substring(16);
-                    ShowProgressDialog();
-                    fileData = Hybrid_AES_DES.decrypt(key, fileData);
-                    if (!cancel) {
-                        byte[] bytess = Utilities.stringToByteArray(fileData.substring(0, len));
-                        BufferedOutputStream bos = null;
-                        bos = new BufferedOutputStream(new FileOutputStream(temp, false));
-                        bos.write(bytess);
-                        bos.flush();
-                        bos.close();
-                        flag = true;
-                    }
-                } else {
-                    flag = false;
-                }
-
             } catch (FileNotFoundException e) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
