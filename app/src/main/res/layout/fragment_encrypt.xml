@@ -36,14 +36,14 @@
                 android:textSize="16sp"
                 android:textColor="#282525"
                 android:padding="5dp"
-                android:layout_marginRight="55dp"
+                android:layout_marginRight="40dp"
                 android:background="@drawable/corners"/>
             <Button
                 android:id="@+id/btnChooseFile"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:background="@drawable/icon_search"
-                android:layout_marginLeft="-45dp"/>
+                android:layout_marginLeft="-35dp"/>
         </LinearLayout>
         <TextView
             android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
                 android:textCursorDrawable="@drawable/cursor_key"
                 android:textColor="#000000"
                 android:padding="5dp"
-                android:layout_marginRight="55dp"
+                android:layout_marginRight="40dp"
                 android:layout_marginTop="3dp"
                 android:background="@drawable/corners"/>
             <Button
@@ -79,7 +79,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:background="@drawable/icon_random"
-                android:layout_marginLeft="-45dp"
+                android:layout_marginLeft="-35dp"
                 android:visibility="gone"/>
         </LinearLayout>
         <CheckBox

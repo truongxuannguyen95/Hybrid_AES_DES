@@ -124,7 +124,7 @@ public class ListKeys extends Fragment {
                         String child = data.getKey().toString();
                         HomePage.listKeys.add(key);
                         listKeysEncrypt.add(new Keys(key, child));
-                        String keyDecrypt = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
+                        String keyDecrypt = Hybrid_AES_DES.decrypt_String("TruongXuanNguyen", key);
                         keyDecrypt = keyDecrypt.trim();
                         keyDecrypt = keyDecrypt.substring(0, keyDecrypt.length() - 11);
                         listKeys.add(new Keys(keyDecrypt, child));

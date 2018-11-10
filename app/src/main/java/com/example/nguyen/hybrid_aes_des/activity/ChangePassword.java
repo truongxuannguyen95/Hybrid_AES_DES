@@ -15,6 +15,7 @@ import android.widget.EditText;
 import com.example.nguyen.hybrid_aes_des.R;
 import com.example.nguyen.hybrid_aes_des.Utilities;
 import com.example.nguyen.hybrid_aes_des.model.AES;
+import com.example.nguyen.hybrid_aes_des.model.Hybrid_AES_DES;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -25,7 +26,6 @@ public class ChangePassword extends AppCompatActivity {
 
     private EditText edtOldPw, edt_stNewPw, edt_ndNewPw;
     private Button btnChange, btnCancel;
-    private AES aes;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,9 +37,6 @@ public class ChangePassword extends AppCompatActivity {
         edt_ndNewPw = findViewById(R.id.edt_ndPassword);
         btnChange = findViewById(R.id.btnChangePw);
         btnCancel = findViewById(R.id.btnCancel);
-
-        aes = new AES();
-        aes.setKey(AES.cryptKey);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,7 +82,7 @@ public class ChangePassword extends AppCompatActivity {
                                         if(task.isSuccessful()){
                                             SharedPreferences pref = getSharedPreferences("sharedSettings", 0);
                                             SharedPreferences.Editor editor = pref.edit();
-                                            editor.putString("password", aes.encrypt(edt_stNewPw.getText().toString()));
+                                            editor.putString("password", Hybrid_AES_DES.encrypt_String("TruongXuanNguyen", edt_stNewPw.getText().toString()));
                                             editor.putInt("length", stNewPw.length());
                                             editor.commit();
                                             Login.pwd = stNewPw;

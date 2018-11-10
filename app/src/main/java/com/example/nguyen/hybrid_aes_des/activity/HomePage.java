@@ -163,9 +163,11 @@ public class HomePage extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.item_login) {
+            finish();
             startActivity(new Intent(HomePage.this, UserPage.class));
         }
         if(item.getItemId() == R.id.item_change) {
+            finish();
             startActivity(new Intent(HomePage.this, ChangePassword.class));
         }
         if(item.getItemId() == R.id.item_logout) {

@@ -18,6 +18,7 @@ import android.widget.EditText;
 import com.example.nguyen.hybrid_aes_des.R;
 import com.example.nguyen.hybrid_aes_des.Utilities;
 import com.example.nguyen.hybrid_aes_des.model.AES;
+import com.example.nguyen.hybrid_aes_des.model.Hybrid_AES_DES;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -59,7 +60,6 @@ public class Login extends Fragment {
     private CheckBox ckbRemember;
     private FirebaseAuth mAuth;
     public static String pwd;
-    private AES aes;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,9 +70,6 @@ public class Login extends Fragment {
         edtPassword = view.findViewById(R.id.edtPassword);
         btnLogin = view.findViewById(R.id.btnLogin);
         ckbRemember = view.findViewById(R.id.ckbRemember);
-
-        aes = new AES();
-        aes.setKey(AES.cryptKey);
 
         final SharedPreferences pref = getActivity().getSharedPreferences("sharedSettings", 0);
         String email = pref.getString("email", "");
@@ -85,7 +82,7 @@ public class Login extends Fragment {
         if(ckbRemember.isChecked()) {
             if(email.length() > 1 && password.length() > 1) {
                 edtEmail.setText(email);
-                edtPassword.setText(aes.decrypt(password).substring(0,length));
+                edtPassword.setText(Hybrid_AES_DES.decrypt_String("TruongXuanNguyen", password).substring(0, length));
             } else if(email.length() > 1) {
                 edtEmail.setText(email);
             }
@@ -143,7 +140,7 @@ public class Login extends Fragment {
                             SharedPreferences.Editor editor = pref.edit();
                             editor.putString("email", edtEmail.getText().toString());
                             if(ckbRemember.isChecked()) {
-                                editor.putString("password", aes.encrypt(pwd));
+                                editor.putString("password", Hybrid_AES_DES.encrypt_String("TruongXuanNguyen", pwd));
                                 editor.putInt("length", pwd.length());
                             } else {
                                 editor.putString("password", "");

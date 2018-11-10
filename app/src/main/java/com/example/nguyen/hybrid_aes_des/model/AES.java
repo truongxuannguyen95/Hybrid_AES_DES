@@ -2,8 +2,6 @@ package com.example.nguyen.hybrid_aes_des.model;
 
 public class AES {
 
-    public static String cryptKey = "TruongXuanNguyen";
-
     public static final int BLOCK_SIZE = 16;    // AES sử dụng 128-bit (16 byte) key
     int numRounds;
     byte[][] Ke;
@@ -305,11 +303,6 @@ public class AES {
 
     public String cryptAll(String data, int mode)  {
         AES aes = this;
-        int rest = data.length()-(data.length() /16)*16;
-        if(rest>0&mode==1) {
-            for(int i=0; i<16-rest; i++)
-                data = data + " ";
-        }
 
         int nParts = data.length() /16;
         byte[] res = new byte[data.length()];

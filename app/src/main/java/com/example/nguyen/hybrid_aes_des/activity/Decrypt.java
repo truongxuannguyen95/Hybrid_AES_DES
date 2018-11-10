@@ -84,7 +84,6 @@ public class Decrypt extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("*/*");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent = Intent.createChooser(intent, "Chọn file để giải mã");
                 startActivityForResult(intent, 0);
             }
@@ -154,9 +153,6 @@ public class Decrypt extends Fragment {
                 fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
             }
             fileNameDecrypt = fileName;
-            if (fileName.length() > 24) {
-                fileName = fileName.substring(0, 20) + "...";
-            }
             tvFileName.setText(fileName);
             tvFileName.setTextColor(Color.BLACK);
         }
@@ -165,6 +161,11 @@ public class Decrypt extends Fragment {
     private class MyAsyncTask extends AsyncTask<String, String, String> {
 
         private ProgressDialog progressDialog;
+        String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String rootPath = storagePath + "/Download/Decrypt";
+        File root = new File(rootPath);
+        File temp = new File(rootPath + "/temp");
+        File file = new File(rootPath + "/" + fileNameDecrypt);
 
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(getContext());
@@ -191,58 +192,45 @@ public class Decrypt extends Fragment {
                 boolean hasKey = false;
                 String key = "";
                 String fileData = Utilities.byteArrayToString(buffer.toByteArray());
-                String oldKey = fileData.substring(0, 32);
-                oldKey = Hybrid_AES_DES.decrypt("TruongXuanNguyen", oldKey);
-                key = edtKeyDecrypt.getText().toString();
-                key = key + "Nguyen@2018";
-                if (UserPage.isOffile) {
-                    String md5Key = Utilities.md5(key);
-                    if (oldKey.equals(md5Key)) {
-                        hasKey = true;
-                    }
-                } else {
-                    if (ckbUseKeys.isChecked()) {
-                        for (int i = 0; i < HomePage.listKeys.size(); i++) {
-                            key = HomePage.listKeys.get(i);
-                            key = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
-                            key = key.trim();
-                            String md5Key = Utilities.md5(key.trim());
-                            if (oldKey.equals(md5Key)) {
-                                hasKey = true;
-                                break;
-                            }
-                        }
-                    } else {
+                if (fileData.length() > 32) {
+                    String oldKey = fileData.substring(0, 32);
+                    oldKey = Hybrid_AES_DES.decrypt_String("TruongXuanNguyen", oldKey);
+                    key = edtKeyDecrypt.getText().toString();
+                    key = key + "Nguyen@2018";
+                    if (UserPage.isOffile) {
                         String md5Key = Utilities.md5(key);
                         if (oldKey.equals(md5Key)) {
                             hasKey = true;
                         }
+                    } else {
+                        if (ckbUseKeys.isChecked()) {
+                            for (int i = 0; i < HomePage.listKeys.size(); i++) {
+                                key = HomePage.listKeys.get(i);
+                                key = Hybrid_AES_DES.decrypt_String("TruongXuanNguyen", key);
+                                key = key.trim();
+                                String md5Key = Utilities.md5(key.trim());
+                                if (oldKey.equals(md5Key)) {
+                                    hasKey = true;
+                                    break;
+                                }
+                            }
+                        } else {
+                            String md5Key = Utilities.md5(key);
+                            if (oldKey.equals(md5Key)) {
+                                hasKey = true;
+                            }
+                        }
+                    }
+                    if (hasKey) {
+                        fileData = fileData.substring(32);
+                        root.mkdirs();
+                        temp.createNewFile();
+                        Hybrid_AES_DES.decrypt_File(key, fileData, temp);
+                        flag = true;
+                    } else {
+                        flag = false;
                     }
                 }
-                if (hasKey) {
-                    fileData = fileData.substring(32);
-                    String decryptLen = fileData.substring(0, 16);
-                    decryptLen = Hybrid_AES_DES.decrypt(key, decryptLen);
-                    int len = Integer.parseInt(decryptLen.trim());
-                    fileData = fileData.substring(16);
-                    fileData = Hybrid_AES_DES.decrypt(key, fileData);
-                    String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-                    String rootPath = storagePath + "/Download/Decrypt";
-                    File root = new File(rootPath);
-                    root.mkdirs();
-                    File file = new File(rootPath + "/" + fileNameDecrypt);
-                    file.createNewFile();
-                    byte[] bytess = Utilities.stringToByteArray(fileData.substring(0, len));
-                    BufferedOutputStream bos = null;
-                    bos = new BufferedOutputStream(new FileOutputStream(file, false));
-                    bos.write(bytess);
-                    bos.flush();
-                    bos.close();
-                    flag = true;
-                } else {
-                    flag = false;
-                }
-
             } catch (FileNotFoundException e) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
@@ -267,8 +255,10 @@ public class Decrypt extends Fragment {
                     tvFileName.setText("");
                     fileNameDecrypt = "";
                     edtKeyDecrypt.setText("");
+                    temp.renameTo(file);
                     Utilities.showAlertDialog("Giải mã thành công", "File giải mã được lưu trong thư mục\n/Download/Decrypt", getContext());
                 } else {
+                    temp.delete();
                     if (UserPage.isOffile || !ckbUseKeys.isChecked())
                         Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc sai key", getContext());
                     else
