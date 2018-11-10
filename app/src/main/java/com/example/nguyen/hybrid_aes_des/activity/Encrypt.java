@@ -272,8 +272,6 @@ public class Encrypt extends Fragment {
                 int len = buffer.size();
                 String encryptLen = Hybrid_AES_DES.encrypt(key, len + "");
                 if (!Hybrid_AES_DES.decrypt(key, encryptLen).trim().equals(len + "") || !md5Key.equals(Hybrid_AES_DES.decrypt("TruongXuanNguyen", encryptKey))) {
-                    System.out.println("LEN ENCRYPT: " + Hybrid_AES_DES.decrypt(key, encryptLen));
-                    System.out.println("KEY ENCRYPT: " + Hybrid_AES_DES.decrypt("TruongXuanNguyen", encryptKey));
                     if (progressDialog.isShowing()) {
                         progressDialog.dismiss();
                         flagFailed = 2;
