@@ -150,7 +150,7 @@ public class Decrypt extends Fragment {
         return view;
     }
 
-    private void chooseFile(){
+    private void chooseFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -205,6 +205,8 @@ public class Decrypt extends Fragment {
         File root = new File(rootPath);
         File temp = new File(rootPath + "/temp");
         File file = new File(rootPath + "/" + fileNameDecrypt);
+        int flagFailed = 0;
+        private boolean flag = false;
 
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(getContext());
@@ -224,8 +226,6 @@ public class Decrypt extends Fragment {
             progressDialog.show();
         }
 
-        private boolean flag = false;
-
         @Override
         protected String doInBackground(String... params) {
             byte[] bytes = new byte[32768];
@@ -240,7 +240,7 @@ public class Decrypt extends Fragment {
                 boolean hasKey = false;
                 String key = "";
                 String fileData = Utilities.byteArrayToString(buffer.toByteArray());
-                if(fileData.length() > 32) {
+                if (fileData.length() > 32) {
                     String oldKey = fileData.substring(0, 32);
                     oldKey = Hybrid_AES_DES.decrypt("TruongXuanNguyen", oldKey);
                     key = edtKeyDecrypt.getText().toString();
@@ -295,13 +295,13 @@ public class Decrypt extends Fragment {
             } catch (FileNotFoundException e) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
-                    Utilities.showAlertDialog("Giải mã thất bại", "File này không còn tồn tại", getContext());
+                    flagFailed = 1;
                 }
                 e.printStackTrace();
             } catch (IOException e) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
-                    Utilities.showAlertDialog("Giải mã thất bại", "Đã xảy ra lỗi trong quá trình đọc file", getContext());
+                    flagFailed = 1;
                 }
                 e.printStackTrace();
             }
@@ -313,22 +313,23 @@ public class Decrypt extends Fragment {
             if (cancel) {
                 temp.delete();
                 cancel = false;
-            } else {
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                    if (flag) {
-                        temp.renameTo(file);
-                        tvFileName.setText("");
-                        fileNameDecrypt = "";
-                        edtKeyDecrypt.setText("");
-                        Utilities.showAlertDialog("Giải mã thành công", "File giải mã được lưu trong thư mục\n/Download/Decrypt", getContext());
-                    } else {
-                        temp.delete();
-                        if (UserPage.isOffile || !ckbUseKeys.isChecked())
-                            Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc sai key", getContext());
-                        else
-                            Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc danh sách key của bạn không chứa key mã hóa file này", getContext());
-                    }
+            } else if (flagFailed == 1) {
+                temp.delete();
+                Utilities.showAlertDialog("Giải mã thất bại", "Đã xảy ra lỗi trong quá trình đọc file", getContext());
+            } else if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+                if (flag) {
+                    temp.renameTo(file);
+                    tvFileName.setText("");
+                    fileNameDecrypt = "";
+                    edtKeyDecrypt.setText("");
+                    Utilities.showAlertDialog("Giải mã thành công", "File giải mã được lưu trong thư mục\n/Download/Decrypt", getContext());
+                } else {
+                    temp.delete();
+                    if (UserPage.isOffile || !ckbUseKeys.isChecked())
+                        Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc sai key", getContext());
+                    else
+                        Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc danh sách key của bạn không chứa key mã hóa file này", getContext());
                 }
             }
         }
@@ -346,7 +347,7 @@ public class Decrypt extends Fragment {
         mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
+public interface OnFragmentInteractionListener {
+    void onFragmentInteraction(Uri uri);
+}
 }

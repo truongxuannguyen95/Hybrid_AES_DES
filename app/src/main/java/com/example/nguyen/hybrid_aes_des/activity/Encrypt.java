@@ -147,7 +147,7 @@ public class Encrypt extends Fragment {
         return view;
     }
 
-    private void chooseFile(){
+    private void chooseFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -179,16 +179,17 @@ public class Encrypt extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(percent_Encrypted < 100){
-                    try{
+                while (percent_Encrypted < 100) {
+                    try {
                         Thread.sleep(200);
-                    }catch(InterruptedException e){
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            progressDialog.setProgress(percent_Encrypted);
+                            if (progressDialog.isShowing())
+                                progressDialog.setProgress(percent_Encrypted);
                         }
                     });
                 }
@@ -203,6 +204,7 @@ public class Encrypt extends Fragment {
         File root = new File(rootPath);
         File temp = new File(rootPath + "/temp");
         File file = new File(rootPath + "/" + fileNameEncrypt);
+        int flagFailed = 0;
 
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(getContext());
@@ -260,7 +262,7 @@ public class Encrypt extends Fragment {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
                                         progressDialog.dismiss();
-                                        Utilities.showAlertDialog("Mã hóa thất bại", "Thiết bị của bạn chưa được kết nối internet\nVui lòng kiểm tra kết nối internet", getContext());
+                                        flagFailed = 1;
                                     }
                                 });
                     }
@@ -269,22 +271,31 @@ public class Encrypt extends Fragment {
                 encryptKey = Hybrid_AES_DES.encrypt("TruongXuanNguyen", md5Key);
                 int len = buffer.size();
                 String encryptLen = Hybrid_AES_DES.encrypt(key, len + "");
-                byte[] bytess = Utilities.stringToByteArray(encryptKey + encryptLen + fileData);
-                BufferedOutputStream bos = null;
-                bos = new BufferedOutputStream(new FileOutputStream(temp, false));
-                bos.write(bytess);
-                bos.flush();
-                bos.close();
+                if (!Hybrid_AES_DES.decrypt(key, encryptLen).trim().equals(len + "") || !md5Key.equals(Hybrid_AES_DES.decrypt("TruongXuanNguyen", encryptKey))) {
+                    System.out.println("LEN ENCRYPT: " + Hybrid_AES_DES.decrypt(key, encryptLen));
+                    System.out.println("KEY ENCRYPT: " + Hybrid_AES_DES.decrypt("TruongXuanNguyen", encryptKey));
+                    if (progressDialog.isShowing()) {
+                        progressDialog.dismiss();
+                        flagFailed = 2;
+                    }
+                } else {
+                    byte[] bytess = Utilities.stringToByteArray(encryptKey + encryptLen + fileData);
+                    BufferedOutputStream bos = null;
+                    bos = new BufferedOutputStream(new FileOutputStream(temp, false));
+                    bos.write(bytess);
+                    bos.flush();
+                    bos.close();
+                }
             } catch (FileNotFoundException e) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
-                    Utilities.showAlertDialog("Mã hóa thất bại", "File này không còn tồn tại", getContext());
+                    flagFailed = 2;
                 }
                 e.printStackTrace();
             } catch (IOException e) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
-                    Utilities.showAlertDialog("Mã hóa thất bại", "Đã xảy ra lỗi trong quá trình đọc file", getContext());
+                    flagFailed = 2;
                 }
                 e.printStackTrace();
             }
@@ -293,34 +304,40 @@ public class Encrypt extends Fragment {
 
         @Override
         public void onPostExecute(String result) {
-            if (progressDialog != null && progressDialog.isShowing()) {
-                temp.renameTo(file);
-                tvFileName.setText("");
-                edtKeyEncrypt.setText("");
-                fileNameEncrypt = "";
-                ckbRandom.setChecked(false);
-                btnRandom.setVisibility(View.GONE);
-                progressDialog.dismiss();
-                Utilities.showAlertDialog("Mã hóa thành công", "File mã hóa được lưu trong thư mục\n/Download/Encrypt", getContext());
-            } else {
+            if (flagFailed == 2) {
+                Utilities.showAlertDialog("Mã hóa thất bại", "Đã xảy ra lỗi trong quá trình đọc file", getContext());
                 temp.delete();
+            } else if (flagFailed == 1) {
+                Utilities.showAlertDialog("Mã hóa thất bại", "Vui lòng kiểm tra lại kết nối Internet", getContext());
+                temp.delete();
+            } else {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    temp.renameTo(file);
+                    tvFileName.setText("");
+                    edtKeyEncrypt.setText("");
+                    fileNameEncrypt = "";
+                    ckbRandom.setChecked(false);
+                    btnRandom.setVisibility(View.GONE);
+                    progressDialog.dismiss();
+                    Utilities.showAlertDialog("Mã hóa thành công", "File mã hóa được lưu trong thư mục\n/Download/Encrypt", getContext());
+                }
             }
         }
     }
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+        public void onButtonPressed(Uri uri) {
+            if (mListener != null) {
+                mListener.onFragmentInteraction(uri);
+            }
+        }
+
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            mListener = null;
+        }
+
+        public interface OnFragmentInteractionListener {
+            void onFragmentInteraction(Uri uri);
         }
     }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
-}
