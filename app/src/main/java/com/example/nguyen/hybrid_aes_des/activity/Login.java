@@ -82,7 +82,7 @@ public class Login extends Fragment {
         if(ckbRemember.isChecked()) {
             if(email.length() > 1 && password.length() > 1) {
                 edtEmail.setText(email);
-                edtPassword.setText(Hybrid_AES_DES.decrypt_String("TruongXuanNguyen", password).substring(0, length));
+                edtPassword.setText(Hybrid_AES_DES.decrypt("TruongXuanNguyen", password).substring(0, length));
             } else if(email.length() > 1) {
                 edtEmail.setText(email);
             }
@@ -140,7 +140,7 @@ public class Login extends Fragment {
                             SharedPreferences.Editor editor = pref.edit();
                             editor.putString("email", edtEmail.getText().toString());
                             if(ckbRemember.isChecked()) {
-                                editor.putString("password", Hybrid_AES_DES.encrypt_String("TruongXuanNguyen", pwd));
+                                editor.putString("password", Hybrid_AES_DES.encrypt("TruongXuanNguyen", pwd));
                                 editor.putInt("length", pwd.length());
                             } else {
                                 editor.putString("password", "");

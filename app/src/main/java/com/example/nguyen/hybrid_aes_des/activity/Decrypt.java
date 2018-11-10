@@ -1,12 +1,14 @@
 package com.example.nguyen.hybrid_aes_des.activity;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -68,6 +70,10 @@ public class Decrypt extends Fragment {
     private Uri uri;
     private String fileNameDecrypt = "";
     private String filePath = "";
+    private ProgressDialog progressDialog;
+    private Handler handler = new Handler();
+    public static int percent_Decrypted = 0;
+    public static boolean cancel = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,6 +90,7 @@ public class Decrypt extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("*/*");
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
                 intent = Intent.createChooser(intent, "Chọn file để giải mã");
                 startActivityForResult(intent, 0);
             }
@@ -123,6 +130,7 @@ public class Decrypt extends Fragment {
                         if (ckbUseKeys.isChecked()) {
                             edtKeyDecrypt.setEnabled(false);
                             edtKeyDecrypt.setText(null);
+                            edtKeyDecrypt.setError(null);
                             edtKeyDecrypt.setBackgroundColor(Color.DKGRAY);
                         } else {
                             edtKeyDecrypt.setEnabled(true);
@@ -158,9 +166,30 @@ public class Decrypt extends Fragment {
         }
     }
 
+    public void ShowProgressDialog() {
+        percent_Decrypted = 0;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (percent_Decrypted < 100) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.setProgress(percent_Decrypted);
+                        }
+                    });
+                }
+            }
+        }).start();
+    }
+
     private class MyAsyncTask extends AsyncTask<String, String, String> {
 
-        private ProgressDialog progressDialog;
         String storagePath = Environment.getExternalStorageDirectory().getAbsolutePath();
         String rootPath = storagePath + "/Download/Decrypt";
         File root = new File(rootPath);
@@ -169,10 +198,19 @@ public class Decrypt extends Fragment {
 
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(getContext());
-            progressDialog.setIndeterminate(true);
+            progressDialog.setIndeterminate(false);
             progressDialog.setCancelable(false);
             progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setMessage("Đang giải mã file...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setMax(100);
+            progressDialog.setMessage("Đang giải mã...");
+            progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Hủy bỏ", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    progressDialog.dismiss();
+                    cancel = true;
+                }
+            });
             progressDialog.show();
         }
 
@@ -192,45 +230,57 @@ public class Decrypt extends Fragment {
                 boolean hasKey = false;
                 String key = "";
                 String fileData = Utilities.byteArrayToString(buffer.toByteArray());
-                if (fileData.length() > 32) {
-                    String oldKey = fileData.substring(0, 32);
-                    oldKey = Hybrid_AES_DES.decrypt_String("TruongXuanNguyen", oldKey);
-                    key = edtKeyDecrypt.getText().toString();
-                    key = key + "Nguyen@2018";
-                    if (UserPage.isOffile) {
+                String oldKey = fileData.substring(0, 32);
+                oldKey = Hybrid_AES_DES.decrypt("TruongXuanNguyen", oldKey);
+                key = edtKeyDecrypt.getText().toString();
+                key = key + "Nguyen@2018";
+                if (UserPage.isOffile) {
+                    String md5Key = Utilities.md5(key);
+                    if (oldKey.equals(md5Key)) {
+                        hasKey = true;
+                    }
+                } else {
+                    if (ckbUseKeys.isChecked()) {
+                        for (int i = 0; i < HomePage.listKeys.size(); i++) {
+                            key = HomePage.listKeys.get(i);
+                            key = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
+                            key = key.trim();
+                            String md5Key = Utilities.md5(key.trim());
+                            if (oldKey.equals(md5Key)) {
+                                hasKey = true;
+                                break;
+                            }
+                        }
+                    } else {
                         String md5Key = Utilities.md5(key);
                         if (oldKey.equals(md5Key)) {
                             hasKey = true;
                         }
-                    } else {
-                        if (ckbUseKeys.isChecked()) {
-                            for (int i = 0; i < HomePage.listKeys.size(); i++) {
-                                key = HomePage.listKeys.get(i);
-                                key = Hybrid_AES_DES.decrypt_String("TruongXuanNguyen", key);
-                                key = key.trim();
-                                String md5Key = Utilities.md5(key.trim());
-                                if (oldKey.equals(md5Key)) {
-                                    hasKey = true;
-                                    break;
-                                }
-                            }
-                        } else {
-                            String md5Key = Utilities.md5(key);
-                            if (oldKey.equals(md5Key)) {
-                                hasKey = true;
-                            }
-                        }
-                    }
-                    if (hasKey) {
-                        fileData = fileData.substring(32);
-                        root.mkdirs();
-                        temp.createNewFile();
-                        Hybrid_AES_DES.decrypt_File(key, fileData, temp);
-                        flag = true;
-                    } else {
-                        flag = false;
                     }
                 }
+                if (hasKey) {
+                    root.mkdirs();
+                    temp.createNewFile();
+                    fileData = fileData.substring(32);
+                    String decryptLen = fileData.substring(0, 16);
+                    decryptLen = Hybrid_AES_DES.decrypt(key, decryptLen);
+                    int len = Integer.parseInt(decryptLen.trim());
+                    fileData = fileData.substring(16);
+                    ShowProgressDialog();
+                    fileData = Hybrid_AES_DES.decrypt(key, fileData);
+                    if (!cancel) {
+                        byte[] bytess = Utilities.stringToByteArray(fileData.substring(0, len));
+                        BufferedOutputStream bos = null;
+                        bos = new BufferedOutputStream(new FileOutputStream(temp, false));
+                        bos.write(bytess);
+                        bos.flush();
+                        bos.close();
+                        flag = true;
+                    }
+                } else {
+                    flag = false;
+                }
+
             } catch (FileNotFoundException e) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
@@ -249,21 +299,25 @@ public class Decrypt extends Fragment {
 
         @Override
         public void onPostExecute(String result) {
-            if (progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
-                if (flag) {
-                    tvFileName.setText("");
-                    fileNameDecrypt = "";
-                    edtKeyDecrypt.setText("");
-                    temp.renameTo(file);
-                    Utilities.showAlertDialog("Giải mã thành công", "File giải mã được lưu trong thư mục\n/Download/Decrypt", getContext());
-                } else {
-                    temp.delete();
-                    if (UserPage.isOffile || !ckbUseKeys.isChecked())
-                        Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc sai key", getContext());
-                    else
-                        Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc danh sách key của bạn không chứa key mã hóa file này", getContext());
-
+            if (cancel) {
+                temp.delete();
+                cancel = false;
+            } else {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                    if (flag) {
+                        temp.renameTo(file);
+                        tvFileName.setText("");
+                        fileNameDecrypt = "";
+                        edtKeyDecrypt.setText("");
+                        Utilities.showAlertDialog("Giải mã thành công", "File giải mã được lưu trong thư mục\n/Download/Decrypt", getContext());
+                    } else {
+                        temp.delete();
+                        if (UserPage.isOffile || !ckbUseKeys.isChecked())
+                            Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc sai key", getContext());
+                        else
+                            Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc danh sách key của bạn không chứa key mã hóa file này", getContext());
+                    }
                 }
             }
         }

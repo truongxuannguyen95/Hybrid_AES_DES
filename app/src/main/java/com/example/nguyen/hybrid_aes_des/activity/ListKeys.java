@@ -70,6 +70,7 @@ public class ListKeys extends Fragment {
     private ArrayList<Keys> listKeys, listKeysEncrypt;
     private ListViewKeys listViewKeys;
     private Dialog dialog;
+    public static boolean allowDelete = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -95,12 +96,14 @@ public class ListKeys extends Fragment {
                         listViewKeys = new ListViewKeys(getContext(), listKeysEncrypt);
                         lvKeys.setAdapter(listViewKeys);
                         listViewKeys.notifyDataSetChanged();
+                        allowDelete = false;
                     }
                 } else {
                     if(ckbShowKey.isChecked()) {
                         listViewKeys = new ListViewKeys(getContext(), listKeys);
                         lvKeys.setAdapter(listViewKeys);
                         listViewKeys.notifyDataSetChanged();
+                        allowDelete = true;
                     }
                 }
             }
@@ -124,7 +127,7 @@ public class ListKeys extends Fragment {
                         String child = data.getKey().toString();
                         HomePage.listKeys.add(key);
                         listKeysEncrypt.add(new Keys(key, child));
-                        String keyDecrypt = Hybrid_AES_DES.decrypt_String("TruongXuanNguyen", key);
+                        String keyDecrypt = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
                         keyDecrypt = keyDecrypt.trim();
                         keyDecrypt = keyDecrypt.substring(0, keyDecrypt.length() - 11);
                         listKeys.add(new Keys(keyDecrypt, child));
@@ -134,7 +137,8 @@ public class ListKeys extends Fragment {
                     }
                 } else {
                     tvEmpty.setText("Chưa có key nào");
-                    tvEmpty.setTextColor(Color.DKGRAY);
+                    tvEmpty.setTextSize(24);
+                    tvEmpty.setTextColor(Color.RED);
                     lvKeys.setEmptyView(tvEmpty);
                 }
             }
@@ -166,6 +170,7 @@ public class ListKeys extends Fragment {
                     listViewKeys = new ListViewKeys(getContext(), listKeys);
                     lvKeys.setAdapter(listViewKeys);
                     listViewKeys.notifyDataSetChanged();
+                    allowDelete = true;
                     dialog.dismiss();
                 } else {
                     if (edtCheckPwd.getText().toString().equals(""))
@@ -179,6 +184,7 @@ public class ListKeys extends Fragment {
             @Override
             public void onClick(View v) {
                 ckbShowKey.setChecked(false);
+                allowDelete = false;
                 dialog.dismiss();
             }
         });

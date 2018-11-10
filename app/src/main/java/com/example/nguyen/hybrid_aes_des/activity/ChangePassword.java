@@ -82,7 +82,7 @@ public class ChangePassword extends AppCompatActivity {
                                         if(task.isSuccessful()){
                                             SharedPreferences pref = getSharedPreferences("sharedSettings", 0);
                                             SharedPreferences.Editor editor = pref.edit();
-                                            editor.putString("password", Hybrid_AES_DES.encrypt_String("TruongXuanNguyen", edt_stNewPw.getText().toString()));
+                                            editor.putString("password", Hybrid_AES_DES.encrypt("TruongXuanNguyen", edt_stNewPw.getText().toString()));
                                             editor.putInt("length", stNewPw.length());
                                             editor.commit();
                                             Login.pwd = stNewPw;
