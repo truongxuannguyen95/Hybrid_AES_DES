@@ -52,7 +52,7 @@ public class Hybrid_AES_DES {
                 }
                 result += aes.encrypt(Utilities.byteArrayToString(cipher_AES));
             }
-        } else { //Giải mã
+        } else {  //Giải mã
             int oldLen = len;
             while (len >= 16) {
                 Decrypt.percent_Decrypted = 100 - (len*100)/oldLen;
