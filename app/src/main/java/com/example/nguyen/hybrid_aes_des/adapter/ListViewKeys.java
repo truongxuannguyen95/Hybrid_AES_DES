@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.example.nguyen.hybrid_aes_des.R;
 import com.example.nguyen.hybrid_aes_des.Utilities;
-import com.example.nguyen.hybrid_aes_des.activity.ListKeys;
-import com.example.nguyen.hybrid_aes_des.activity.Login;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentListKeys;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentLogin;
 import com.example.nguyen.hybrid_aes_des.model.Keys;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -75,7 +75,7 @@ public class ListViewKeys extends BaseAdapter {
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (ListKeys.allowDelete) {
+                if (FragmentListKeys.allowDelete) {
                     deleteKey(position);
                 } else {
                     showDialog(position);
@@ -137,7 +137,7 @@ public class ListViewKeys extends BaseAdapter {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edtCheckPwd.getText().toString().equals(Login.pwd)) {
+                if (edtCheckPwd.getText().toString().equals(FragmentLogin.pwd)) {
                     dialog.dismiss();
                     deleteKey(position);
                 } else {

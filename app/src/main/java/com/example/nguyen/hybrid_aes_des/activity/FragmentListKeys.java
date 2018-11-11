@@ -1,7 +1,6 @@
 package com.example.nguyen.hybrid_aes_des.activity;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class ListKeys extends Fragment {
+public class FragmentListKeys extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -42,11 +41,11 @@ public class ListKeys extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public ListKeys() {
+    public FragmentListKeys() {
     }
 
-    public static ListKeys newInstance(String param1, String param2) {
-        ListKeys fragment = new ListKeys();
+    public static FragmentListKeys newInstance(String param1, String param2) {
+        FragmentListKeys fragment = new FragmentListKeys();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -166,7 +165,7 @@ public class ListKeys extends Fragment {
         btnOK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (edtCheckPwd.getText().toString().equals(Login.pwd)) {
+                if (edtCheckPwd.getText().toString().equals(FragmentLogin.pwd)) {
                     listViewKeys = new ListViewKeys(getContext(), listKeys);
                     lvKeys.setAdapter(listViewKeys);
                     listViewKeys.notifyDataSetChanged();

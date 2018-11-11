@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +13,6 @@ import android.widget.EditText;
 
 import com.example.nguyen.hybrid_aes_des.R;
 import com.example.nguyen.hybrid_aes_des.Utilities;
-import com.example.nguyen.hybrid_aes_des.model.AES;
 import com.example.nguyen.hybrid_aes_des.model.Hybrid_AES_DES;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -85,7 +83,7 @@ public class ChangePassword extends AppCompatActivity {
                                             editor.putString("password", Hybrid_AES_DES.encrypt("TruongXuanNguyen", edt_stNewPw.getText().toString()));
                                             editor.putInt("length", stNewPw.length());
                                             editor.commit();
-                                            Login.pwd = stNewPw;
+                                            FragmentLogin.pwd = stNewPw;
                                             edtOldPw.setText("");
                                             edt_stNewPw.setText("");
                                             edt_ndNewPw.setText("");

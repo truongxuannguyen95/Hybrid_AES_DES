@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class SignUp extends Fragment {
+public class FragmentSignUp extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -32,11 +31,11 @@ public class SignUp extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public SignUp() {
+    public FragmentSignUp() {
     }
 
-    public static SignUp newInstance(String param1, String param2) {
-        SignUp fragment = new SignUp();
+    public static FragmentSignUp newInstance(String param1, String param2) {
+        FragmentSignUp fragment = new FragmentSignUp();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

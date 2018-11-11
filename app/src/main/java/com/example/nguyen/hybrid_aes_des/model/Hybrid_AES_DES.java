@@ -1,8 +1,8 @@
 package com.example.nguyen.hybrid_aes_des.model;
 
 import com.example.nguyen.hybrid_aes_des.Utilities;
-import com.example.nguyen.hybrid_aes_des.activity.Decrypt;
-import com.example.nguyen.hybrid_aes_des.activity.Encrypt;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentDecrypt;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentEncrypt;
 
 public class Hybrid_AES_DES {
 
@@ -48,9 +48,9 @@ public class Hybrid_AES_DES {
                 }
                 len = divideCipher.length();
                 while (len >= 16) {
-                    Encrypt.percent_Encrypted = 100 - (oldLen - percent)*100/oldLen;
-                    if (Encrypt.cancel) {
-                        Encrypt.cancel = false;
+                    FragmentEncrypt.percent_Encrypted = 100 - (oldLen - percent)*100/oldLen;
+                    if (FragmentEncrypt.cancel) {
+                        FragmentEncrypt.cancel = false;
                         return result;
                     }
                     String temp_cipher = divideCipher.substring(0, 8);
@@ -82,8 +82,8 @@ public class Hybrid_AES_DES {
                 }
                 len = divideCipher.length();
                 while (len >= 16) {
-                    Decrypt.percent_Decrypted = 100 - (oldLen - percent)*100/oldLen;
-                    if (Decrypt.cancel) {
+                    FragmentDecrypt.percent_Decrypted = 100 - (oldLen - percent)*100/oldLen;
+                    if (FragmentDecrypt.cancel) {
                         break;
                     }
                     String temp_cipher = divideCipher.substring(0, 16);

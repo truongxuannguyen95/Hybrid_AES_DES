@@ -14,9 +14,19 @@
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activity.UserPage" android:theme="@style/User">
+        <activity android:name=".activity.Intro" android:theme="@style/User">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <key android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.UserPage" android:theme="@style/User">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
 

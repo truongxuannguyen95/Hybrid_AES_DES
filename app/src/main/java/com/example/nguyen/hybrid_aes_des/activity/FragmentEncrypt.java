@@ -24,7 +24,6 @@ import com.example.nguyen.hybrid_aes_des.R;
 import com.example.nguyen.hybrid_aes_des.Utilities;
 import com.example.nguyen.hybrid_aes_des.model.Hybrid_AES_DES;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -38,7 +37,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Encrypt extends Fragment {
+public class FragmentEncrypt extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -48,11 +47,11 @@ public class Encrypt extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public Encrypt() {
+    public FragmentEncrypt() {
     }
 
-    public static Encrypt newInstance(String param1, String param2) {
-        Encrypt fragment = new Encrypt();
+    public static FragmentEncrypt newInstance(String param1, String param2) {
+        FragmentEncrypt fragment = new FragmentEncrypt();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -143,7 +142,7 @@ public class Encrypt extends Fragment {
                     if(Utilities.isOnline(getContext()))
                         new MyAsyncTask().execute();
                     else
-                    Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet\nVui lòng kiểm tra kết nối internet", getContext(), false);
+                        Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet\nVui lòng kiểm tra kết nối internet", getContext(), false);
                 }
             }
         });

@@ -3,6 +3,7 @@ package com.example.nguyen.hybrid_aes_des.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -167,7 +168,6 @@ public class HomePage extends AppCompatActivity {
             startActivity(new Intent(HomePage.this, UserPage.class));
         }
         if(item.getItemId() == R.id.item_change) {
-            finish();
             startActivity(new Intent(HomePage.this, ChangePassword.class));
         }
         if(item.getItemId() == R.id.item_logout) {
@@ -181,8 +181,41 @@ public class HomePage extends AppCompatActivity {
             startActivity(new Intent(HomePage.this, UserPage.class));
         }
         if(item.getItemId() == R.id.item_exit) {
-            System.exit(0);
+            showDialogExit();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        showDialogExit();
+    }
+
+    private void showDialogExit(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomePage.this);
+        builder.setTitle("Bạn có chắc muốn thoát ứng dụng");
+        builder.setMessage("");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Xác nhận", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                System.exit(0);
+            }
+        });
+        builder.setNegativeButton("Hủy bỏ", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLUE);
+            }
+        });
+        alertDialog.show();
     }
 }

@@ -32,7 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class Decrypt extends Fragment {
+public class FragmentDecrypt extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -42,11 +42,11 @@ public class Decrypt extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public Decrypt() {
+    public FragmentDecrypt() {
     }
 
-    public static Decrypt newInstance(String param1, String param2) {
-        Decrypt fragment = new Decrypt();
+    public static FragmentDecrypt newInstance(String param1, String param2) {
+        FragmentDecrypt fragment = new FragmentDecrypt();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

@@ -17,14 +17,13 @@ import android.widget.EditText;
 
 import com.example.nguyen.hybrid_aes_des.R;
 import com.example.nguyen.hybrid_aes_des.Utilities;
-import com.example.nguyen.hybrid_aes_des.model.AES;
 import com.example.nguyen.hybrid_aes_des.model.Hybrid_AES_DES;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class Login extends Fragment {
+public class FragmentLogin extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -34,11 +33,11 @@ public class Login extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public Login() {
+    public FragmentLogin() {
     }
 
-    public static Login newInstance(String param1, String param2) {
-        Login fragment = new Login();
+    public static FragmentLogin newInstance(String param1, String param2) {
+        FragmentLogin fragment = new FragmentLogin();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

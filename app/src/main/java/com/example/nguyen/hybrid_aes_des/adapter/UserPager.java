@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.example.nguyen.hybrid_aes_des.activity.ForgetPassword;
-import com.example.nguyen.hybrid_aes_des.activity.Login;
-import com.example.nguyen.hybrid_aes_des.activity.SignUp;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentForget;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentLogin;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentSignUp;
 
 public class UserPager extends FragmentStatePagerAdapter {
     private int numOfTabs;
@@ -20,13 +20,13 @@ public class UserPager extends FragmentStatePagerAdapter {
         switch (position)
         {
             case 0:
-                Login loginFragment = new Login();
-                return loginFragment;
+                FragmentLogin fragmentLoginFragment = new FragmentLogin();
+                return fragmentLoginFragment;
             case 1:
-                SignUp signUpFragment = new SignUp();
-                return signUpFragment;
+                FragmentSignUp fragmentSignUpFragment = new FragmentSignUp();
+                return fragmentSignUpFragment;
             case 2:
-                ForgetPassword resetFragment = new ForgetPassword();
+                FragmentForget resetFragment = new FragmentForget();
                 return resetFragment;
             default:
                 return null;

@@ -1,6 +1,5 @@
 package com.example.nguyen.hybrid_aes_des.activity;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,7 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class ForgetPassword extends Fragment {
+public class FragmentForget extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -28,11 +27,11 @@ public class ForgetPassword extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public ForgetPassword() {
+    public FragmentForget() {
     }
 
-    public static ForgetPassword newInstance(String param1, String param2) {
-        ForgetPassword fragment = new ForgetPassword();
+    public static FragmentForget newInstance(String param1, String param2) {
+        FragmentForget fragment = new FragmentForget();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.example.nguyen.hybrid_aes_des.activity.Decrypt;
-import com.example.nguyen.hybrid_aes_des.activity.Encrypt;
-import com.example.nguyen.hybrid_aes_des.activity.ListKeys;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentDecrypt;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentEncrypt;
+import com.example.nguyen.hybrid_aes_des.activity.FragmentListKeys;
 
 public class HomePager extends FragmentStatePagerAdapter {
 
@@ -21,14 +21,14 @@ public class HomePager extends FragmentStatePagerAdapter {
         switch (position)
         {
             case 0:
-                Encrypt encryptFragment = new Encrypt();
-                return encryptFragment;
+                FragmentEncrypt fragmentEncryptFragment = new FragmentEncrypt();
+                return fragmentEncryptFragment;
             case 1:
-                Decrypt decryptFragment = new Decrypt();
-                return decryptFragment;
+                FragmentDecrypt fragmentDecryptFragment = new FragmentDecrypt();
+                return fragmentDecryptFragment;
             case 2:
-                ListKeys listKeysFragment = new ListKeys();
-                return listKeysFragment;
+                FragmentListKeys fragmentListKeysFragment = new FragmentListKeys();
+                return fragmentListKeysFragment;
             default:
                 return null;
         }
