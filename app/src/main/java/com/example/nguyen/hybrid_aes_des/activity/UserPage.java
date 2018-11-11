@@ -24,7 +24,7 @@ import android.widget.LinearLayout;
 
 public class UserPage extends AppCompatActivity{
 
-    public static boolean isOffile;
+    public static boolean isOffile = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +45,7 @@ public class UserPage extends AppCompatActivity{
                     public void onClick(DialogInterface dialogInterface, int i) {
                         isOffile = true;
                         finish();
+                        dialogInterface.dismiss();
                         startActivity(new Intent(UserPage.this, HomePage.class));
                     }
                 });

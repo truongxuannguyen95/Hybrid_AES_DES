@@ -68,7 +68,7 @@ public class ListViewKeys extends BaseAdapter {
         tvFileName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utilities.showAlertDialog("Key", key, myContext);
+                Utilities.showAlertDialog("Key", key, myContext, false);
             }
         });
 
@@ -103,7 +103,7 @@ public class ListViewKeys extends BaseAdapter {
                     dialogInterface.dismiss();
                     notifyDataSetChanged();
                 } else {
-                    Utilities.showAlertDialog("Xóa thất bại", "Thiết bị của bạn chưa được kết nối internet", myContext);
+                    Utilities.showAlertDialog("Xóa thất bại", "Thiết bị của bạn chưa được kết nối internet", myContext, false);
                 }
             }
         });

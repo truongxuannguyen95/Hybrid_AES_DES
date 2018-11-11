@@ -89,18 +89,18 @@ public class ChangePassword extends AppCompatActivity {
                                             edtOldPw.setText("");
                                             edt_stNewPw.setText("");
                                             edt_ndNewPw.setText("");
-                                            Utilities.showAlertDialog("Thông báo", "Đổi mật khẩu thành công", ChangePassword.this);
+                                            Utilities.showAlertDialog("Thông báo", "Đổi mật khẩu thành công", ChangePassword.this, true);
                                         }
                                         else {
-                                            Utilities.showAlertDialog("Thông báo", "Đổi mật khẩu thất bại\nCó vẻ đã xảy ra lỗi gì đó!", ChangePassword.this);
+                                            Utilities.showAlertDialog("Thông báo", "Đổi mật khẩu thất bại\nCó vẻ đã xảy ra lỗi gì đó!", ChangePassword.this, false);
                                         }
                                     }
                                 });
                             } else {
                                 if(Utilities.isOnline(getApplicationContext()))
-                                    Utilities.showAlertDialog("Đổi mật khẩu thất bại", "Mật khẩu cũ không đúng", ChangePassword.this);
+                                    Utilities.showAlertDialog("Đổi mật khẩu thất bại", "Mật khẩu cũ không đúng", ChangePassword.this, false);
                                 else
-                                    Utilities.showAlertDialog("Đổi mật khẩu thất bại", "Thiết bị của bạn chưa được kết nối internet", ChangePassword.this);
+                                    Utilities.showAlertDialog("Đổi mật khẩu thất bại", "Thiết bị của bạn chưa được kết nối internet", ChangePassword.this, false);
                             }
                         }
                     });

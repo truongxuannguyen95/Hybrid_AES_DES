@@ -77,18 +77,18 @@ public class ForgetPassword extends Fragment {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Utilities.dismissProgressDialog();
                                         if (task.isSuccessful()) {
-                                            Utilities.showAlertDialog("Thông báo", "Kiểm tra email để nhận mật khẩu mới", getContext());
+                                            Utilities.showAlertDialog("Thông báo", "Kiểm tra email để nhận mật khẩu mới", getContext(), true);
                                         } else {
-                                            Utilities.showAlertDialog("Thông báo", "Email của bạn chưa được đăng ký", getContext());
+                                            Utilities.showAlertDialog("Thông báo", "Email của bạn chưa được đăng ký", getContext(), false);
                                         }
                                     }
                                 });
                     } else {
-                        Utilities.showAlertDialog("Thông báo", "Bạn cần cung cấp email hợp lệ", getContext());
+                        Utilities.showAlertDialog("Thông báo", "Bạn cần cung cấp email hợp lệ", getContext(), false);
                         edtEmail.setError("Bạn cần cung cấp email hợp lệ", icon);
                     }
                 } else {
-                    Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet", getContext());
+                    Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet", getContext(), false);
                 }
             }
         });

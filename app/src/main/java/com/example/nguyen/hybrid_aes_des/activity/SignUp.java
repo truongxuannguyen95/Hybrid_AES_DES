@@ -111,16 +111,16 @@ public class SignUp extends Fragment {
                             FirebaseUser currentUser = mAuth.getCurrentUser();
                             DatabaseReference mData = FirebaseDatabase.getInstance().getReference();
                             mData.child("users").child(currentUser.getUid()).setValue("");
-                            Utilities.showAlertDialog("Đăng ký thành công", "Bạn đã có thể tiến hành đăng nhập bằng tài khoản này", getContext());
+                            Utilities.showAlertDialog("Đăng ký thành công", "Bạn đã có thể tiến hành đăng nhập bằng tài khoản này", getContext(), true);
                             edtEmail.setText("");
                             edt_stPassword.setText("");
                             edt_ndPassword.setText("");
                         }
                         else {
                             if(Utilities.isOnline(getContext()))
-                                Utilities.showAlertDialog("Đăng ký thất bại", "Email này đã được sử dụng\nVui lòng sử dụng 1 email khác", getContext());
+                                Utilities.showAlertDialog("Đăng ký thất bại", "Email này đã được sử dụng\nVui lòng sử dụng 1 email khác", getContext(), false);
                             else
-                                Utilities.showAlertDialog("Đăng ký thất bại", "Thiết bị của bạn chưa được kết nối internet", getContext());
+                                Utilities.showAlertDialog("Đăng ký thất bại", "Thiết bị của bạn chưa được kết nối internet", getContext(), false);
                         }
                     }
                 });

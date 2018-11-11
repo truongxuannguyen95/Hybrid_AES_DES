@@ -102,7 +102,7 @@ public class Decrypt extends Fragment {
             @Override
             public void onClick(View view) {
                 if (fileNameDecrypt.length() == 0) {
-                    Utilities.showAlertDialog("Thông báo", "Vui lòng chọn file để giải mã", getContext());
+                    Utilities.showAlertDialog("Thông báo", "Vui lòng chọn file để giải mã", getContext(), false);
                 } else if (UserPage.isOffile) {
                     if (edtKeyDecrypt.length() == 0) {
                         edtKeyDecrypt.setError("Vui lòng nhập key để giải mã");
@@ -115,7 +115,7 @@ public class Decrypt extends Fragment {
                     } else if (Utilities.isOnline(getContext())) {
                         new MyAsyncTask().execute();
                     } else {
-                        Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet\nVui lòng kết nối internet để sử dụng chức năng này", getContext());
+                        Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet\nVui lòng kết nối internet để sử dụng chức năng này", getContext(), false);
                     }
                 }
             }
@@ -126,7 +126,7 @@ public class Decrypt extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (buttonView.isPressed()) {
                     if (UserPage.isOffile) {
-                        Utilities.showAlertDialog("Thông báo", "Chức năng này chỉ sử dụng khi đăng nhập", getContext());
+                        Utilities.showAlertDialog("Thông báo", "Chức năng này chỉ sử dụng khi đăng nhập", getContext(), false);
                         ckbUseKeys.setChecked(false);
                     } else {
                         if (ckbUseKeys.isChecked()) {
@@ -315,7 +315,7 @@ public class Decrypt extends Fragment {
                 cancel = false;
             } else if (flagFailed == 1) {
                 temp.delete();
-                Utilities.showAlertDialog("Giải mã thất bại", "Đã xảy ra lỗi trong quá trình đọc file", getContext());
+                Utilities.showAlertDialog("Giải mã thất bại", "Đã xảy ra lỗi trong quá trình đọc file", getContext(), false);
             } else if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
                 if (flag) {
@@ -323,13 +323,13 @@ public class Decrypt extends Fragment {
                     tvFileName.setText("");
                     fileNameDecrypt = "";
                     edtKeyDecrypt.setText("");
-                    Utilities.showAlertDialog("Giải mã thành công", "File giải mã được lưu trong thư mục\n/Download/Decrypt", getContext());
+                    Utilities.showAlertDialog("Giải mã thành công", "File giải mã được lưu trong thư mục\n/Download/Decrypt", getContext(), true);
                 } else {
                     temp.delete();
                     if (UserPage.isOffile || !ckbUseKeys.isChecked())
-                        Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc sai key", getContext());
+                        Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc sai key", getContext(), false);
                     else
-                        Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc danh sách key của bạn không chứa key mã hóa file này", getContext());
+                        Utilities.showAlertDialog("Giải mã thất bại", "File này chưa được mã hóa hoặc danh sách key của bạn không chứa key mã hóa file này", getContext(), false);
                 }
             }
         }

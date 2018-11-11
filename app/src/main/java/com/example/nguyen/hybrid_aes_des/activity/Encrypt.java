@@ -134,13 +134,16 @@ public class Encrypt extends Fragment {
             @Override
             public void onClick(View view) {
                 if (fileNameEncrypt.length() == 0) {
-                    Utilities.showAlertDialog("Thông báo", "Vui lòng chọn file để mã hóa", getContext());
+                    Utilities.showAlertDialog("Thông báo", "Vui lòng chọn file để mã hóa", getContext(), false);
                 } else if (edtKeyEncrypt.getText().toString().length() < 8) {
                     edtKeyEncrypt.setError("Key phải từ 8 ký tự trở lên");
-                } else if (Utilities.isOnline(getContext())) {
+                } else if (UserPage.isOffile) {
                     new MyAsyncTask().execute();
                 } else {
-                    Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet\nVui lòng kiểm tra kết nối internet", getContext());
+                    if(Utilities.isOnline(getContext()))
+                        new MyAsyncTask().execute();
+                    else
+                    Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet\nVui lòng kiểm tra kết nối internet", getContext(), false);
                 }
             }
         });
@@ -303,10 +306,10 @@ public class Encrypt extends Fragment {
         @Override
         public void onPostExecute(String result) {
             if (flagFailed == 2) {
-                Utilities.showAlertDialog("Mã hóa thất bại", "Đã xảy ra lỗi trong quá trình đọc file", getContext());
+                Utilities.showAlertDialog("Mã hóa thất bại", "Đã xảy ra lỗi trong quá trình đọc file", getContext(), false);
                 temp.delete();
             } else if (flagFailed == 1) {
-                Utilities.showAlertDialog("Mã hóa thất bại", "Vui lòng kiểm tra lại kết nối Internet", getContext());
+                Utilities.showAlertDialog("Mã hóa thất bại", "Vui lòng kiểm tra lại kết nối Internet", getContext(), false);
                 temp.delete();
             } else {
                 if (progressDialog != null && progressDialog.isShowing()) {
@@ -317,7 +320,7 @@ public class Encrypt extends Fragment {
                     ckbRandom.setChecked(false);
                     btnRandom.setVisibility(View.GONE);
                     progressDialog.dismiss();
-                    Utilities.showAlertDialog("Mã hóa thành công", "File mã hóa được lưu trong thư mục\n/Download/Encrypt", getContext());
+                    Utilities.showAlertDialog("Mã hóa thành công", "File mã hóa được lưu trong thư mục\n/Download/Encrypt", getContext(), true);
                 }
             }
         }

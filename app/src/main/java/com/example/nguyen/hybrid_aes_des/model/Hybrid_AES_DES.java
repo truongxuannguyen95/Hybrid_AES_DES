@@ -51,7 +51,7 @@ public class Hybrid_AES_DES {
                     Encrypt.percent_Encrypted = 100 - (oldLen - percent)*100/oldLen;
                     if (Encrypt.cancel) {
                         Encrypt.cancel = false;
-                        break;
+                        return result;
                     }
                     String temp_cipher = divideCipher.substring(0, 8);
                     cipher_DES_1 = stDes.encrypt(Utilities.stringToByteArray(temp_cipher));

@@ -146,7 +146,7 @@ public class ListKeys extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 try {
-                    Utilities.showAlertDialog("Thông báo", "Đã xảy ra lỗi trong quá trình kiểm tra dữ liệu\nVui lòng thử lại sau", getContext());
+                    Utilities.showAlertDialog("Thông báo", "Đã xảy ra lỗi trong quá trình kiểm tra dữ liệu\nVui lòng thử lại sau", getContext(), false);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -152,9 +152,9 @@ public class Login extends Fragment {
                             startActivity(new Intent(getContext(), HomePage.class));
                         } else {
                             if(Utilities.isOnline(getContext()))
-                                Utilities.showAlertDialog("Đăng nhập thất bại", "Email hoặc mật khẩu sai!", getContext());
+                                Utilities.showAlertDialog("Đăng nhập thất bại", "Email hoặc mật khẩu sai!", getContext(), false);
                             else
-                                Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet", getContext());
+                                Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet", getContext(), false);
                         }
                     }
                 });

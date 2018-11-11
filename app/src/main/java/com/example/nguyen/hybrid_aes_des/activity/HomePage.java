@@ -116,7 +116,7 @@ public class HomePage extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Utilities.showAlertDialog("Thông báo", "Đã xảy ra lỗi trong quá trình kiểm tra dữ liệu. Vui lòng thử lại sau", HomePage.this);
+                Utilities.showAlertDialog("Thông báo", "Đã xảy ra lỗi trong quá trình kiểm tra dữ liệu. Vui lòng thử lại sau", HomePage.this, false);
             }
         });
     }

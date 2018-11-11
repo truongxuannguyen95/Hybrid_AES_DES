@@ -3,9 +3,11 @@ package com.example.nguyen.hybrid_aes_des;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -54,9 +56,12 @@ public class Utilities {
         return (netInfo != null && netInfo.isConnectedOrConnecting());
     }
 
-    public static void showAlertDialog(String title, String message, Context myContext) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(myContext);
-        builder.setTitle(title);
+    public static void showAlertDialog(String title, String message, Context myContext, boolean type_Report) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(myContext);
+        if(type_Report)
+            builder.setTitle(Html.fromHtml("<font color='#3F51B5'>" + title + "</font>"));
+        else
+            builder.setTitle(Html.fromHtml("<font color='#FF4081'>" + title + "</font>"));
         builder.setMessage(message);
         builder.setCancelable(false);
         builder.setNegativeButton("Xác nhận", new DialogInterface.OnClickListener() {
@@ -66,6 +71,14 @@ public class Utilities {
             }
         });
         final AlertDialog alertDialog = builder.create();
+        if(type_Report) {
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLUE);
+                }
+            });
+        }
         alertDialog.show();
     }
 
