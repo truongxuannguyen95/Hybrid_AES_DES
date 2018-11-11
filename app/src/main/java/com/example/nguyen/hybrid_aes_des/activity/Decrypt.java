@@ -347,7 +347,7 @@ public class Decrypt extends Fragment {
         mListener = null;
     }
 
-public interface OnFragmentInteractionListener {
-    void onFragmentInteraction(Uri uri);
-}
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
 }

@@ -323,19 +323,19 @@ public class Encrypt extends Fragment {
         }
     }
 
-        public void onButtonPressed(Uri uri) {
-            if (mListener != null) {
-                mListener.onFragmentInteraction(uri);
-            }
-        }
-
-        @Override
-        public void onDetach() {
-            super.onDetach();
-            mListener = null;
-        }
-
-        public interface OnFragmentInteractionListener {
-            void onFragmentInteraction(Uri uri);
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
         }
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
+}
