@@ -6,6 +6,8 @@ import com.example.nguyen.hybrid_aes_des.activity.FragmentEncrypt;
 
 public class Hybrid_AES_DES {
 
+    private static int[] mix = {7, 1, 3, 4, 6, 9, 2, 11, 15, 0, 8, 14, 12, 5, 13, 10};
+
     public static String hybird_AES_DES(String key, String cipher, boolean check) {
         String BYTES_DES = "11111111";
         String BYTES_AES = "1111111111111111";
@@ -61,10 +63,10 @@ public class Hybrid_AES_DES {
                     len = divideCipher.length();
                     percent += 16;
                     for (int i = 0; i < 16; i++) {
-                        if (i % 2 == 0) {
-                            cipher_AES[i] = cipher_DES_1[i / 2];
+                        if (i < 8) {
+                            cipher_AES[mix[i]] = cipher_DES_1[i];
                         } else {
-                            cipher_AES[i] = cipher_DES_2[i / 2];
+                            cipher_AES[mix[i]] = cipher_DES_2[i - 8];
                         }
                     }
                     arrResult[k] += aes.encrypt(Utilities.byteArrayToString(cipher_AES));
@@ -92,10 +94,10 @@ public class Hybrid_AES_DES {
                     percent += 16;
                     cipher_AES = Utilities.stringToByteArray(aes.decrypt(temp_cipher));
                     for (int i = 0; i < 16; i++) {
-                        if (i % 2 == 0) {
-                            cipher_DES_1[i / 2] = cipher_AES[i];
+                        if (i < 8) {
+                            cipher_DES_1[i] = cipher_AES[mix[i]];
                         } else {
-                            cipher_DES_2[i / 2] = cipher_AES[i];
+                            cipher_DES_2[i - 8] = cipher_AES[mix[i]];
                         }
                     }
                     arrResult[k] += (Utilities.byteArrayToString((stDes.decrypt(cipher_DES_1))));

@@ -242,28 +242,31 @@ public class FragmentDecrypt extends Fragment {
                 String fileData = Utilities.byteArrayToString(buffer.toByteArray());
                 if (fileData.length() > 32) {
                     String oldKey = fileData.substring(0, 32);
-                    oldKey = Hybrid_AES_DES.decrypt("TruongXuanNguyen", oldKey);
                     key = edtKeyDecrypt.getText().toString();
                     key = key + "Nguyen@2018";
                     if (UserPage.isOffile) {
                         String md5Key = Utilities.md5(key);
+                        oldKey = Hybrid_AES_DES.decrypt(key, oldKey);
                         if (oldKey.equals(md5Key)) {
                             hasKey = true;
                         }
                     } else {
                         if (ckbUseKeys.isChecked()) {
+
                             for (int i = 0; i < HomePage.listKeys.size(); i++) {
                                 key = HomePage.listKeys.get(i);
                                 key = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
                                 key = key.trim();
-                                String md5Key = Utilities.md5(key.trim());
-                                if (oldKey.equals(md5Key)) {
+                                String tempOldKey = Hybrid_AES_DES.decrypt(key, oldKey);
+                                String md5Key = Utilities.md5(key);
+                                if (tempOldKey.equals(md5Key)) {
                                     hasKey = true;
                                     break;
                                 }
                             }
                         } else {
                             String md5Key = Utilities.md5(key);
+                            oldKey = Hybrid_AES_DES.decrypt(key, oldKey);
                             if (oldKey.equals(md5Key)) {
                                 hasKey = true;
                             }

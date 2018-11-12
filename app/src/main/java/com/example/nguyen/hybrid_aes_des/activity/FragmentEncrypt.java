@@ -139,7 +139,7 @@ public class FragmentEncrypt extends Fragment {
                 } else if (UserPage.isOffile) {
                     new MyAsyncTask().execute();
                 } else {
-                    if(Utilities.isOnline(getContext()))
+                    if (Utilities.isOnline(getContext()))
                         new MyAsyncTask().execute();
                     else
                         Utilities.showAlertDialog("Thông báo", "Thiết bị của bạn chưa được kết nối internet\nVui lòng kiểm tra kết nối internet", getContext(), false);
@@ -241,12 +241,15 @@ public class FragmentEncrypt extends Fragment {
                 String fileData = Utilities.byteArrayToString(buffer.toByteArray());
                 String key = edtKeyEncrypt.getText().toString();
                 key = key + "Nguyen@2018";
+                String md5Key = Utilities.md5(key);
+                String len = buffer.size() + "";
+                while (len.length() < 16) {
+                    len += " ";
+                }
+                fileData = md5Key + len + fileData;
                 fileData = Hybrid_AES_DES.encrypt(key, fileData);
-                root.mkdirs();
-                temp.createNewFile();
-                String encryptKey = "";
                 if (!UserPage.isOffile) {
-                    encryptKey = Hybrid_AES_DES.encrypt("TruongXuanNguyen", key);
+                    String encryptKey = Hybrid_AES_DES.encrypt("TruongXuanNguyen", key);
                     FirebaseAuth mAuth = FirebaseAuth.getInstance();
                     FirebaseUser currentUser = mAuth.getCurrentUser();
                     String owner = currentUser.getUid();
@@ -269,23 +272,14 @@ public class FragmentEncrypt extends Fragment {
                                 });
                     }
                 }
-                String md5Key = Utilities.md5(key);
-                encryptKey = Hybrid_AES_DES.encrypt("TruongXuanNguyen", md5Key);
-                int len = buffer.size();
-                String encryptLen = Hybrid_AES_DES.encrypt(key, len + "");
-                if (!Hybrid_AES_DES.decrypt(key, encryptLen).trim().equals(len + "") || !md5Key.equals(Hybrid_AES_DES.decrypt("TruongXuanNguyen", encryptKey))) {
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                        flagFailed = 2;
-                    }
-                } else {
-                    byte[] bytess = Utilities.stringToByteArray(encryptKey + encryptLen + fileData);
-                    BufferedOutputStream bos = null;
-                    bos = new BufferedOutputStream(new FileOutputStream(temp, false));
-                    bos.write(bytess);
-                    bos.flush();
-                    bos.close();
-                }
+                root.mkdirs();
+                temp.createNewFile();
+                byte[] bytess = Utilities.stringToByteArray(fileData);
+                BufferedOutputStream bos = null;
+                bos = new BufferedOutputStream(new FileOutputStream(temp, false));
+                bos.write(bytess);
+                bos.flush();
+                bos.close();
             } catch (FileNotFoundException e) {
                 if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
