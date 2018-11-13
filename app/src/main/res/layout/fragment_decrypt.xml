@@ -79,7 +79,7 @@
             android:id="@+id/ckbUseKeys"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sử dụng list keys"
+            android:text="Sử dụng danh sách key"
             android:checked="false"
             android:textSize="16sp"
             android:textColor="#c412d4"

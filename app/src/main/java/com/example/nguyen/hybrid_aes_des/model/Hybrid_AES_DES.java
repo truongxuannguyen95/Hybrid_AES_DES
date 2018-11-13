@@ -6,8 +6,6 @@ import com.example.nguyen.hybrid_aes_des.activity.FragmentEncrypt;
 
 public class Hybrid_AES_DES {
 
-    private static int[] mix = {7, 1, 3, 4, 6, 9, 2, 11, 15, 0, 8, 14, 12, 5, 13, 10};
-
     public static String hybird_AES_DES(String key, String cipher, boolean check) {
         String BYTES_DES = "11111111";
         String BYTES_AES = "1111111111111111";
@@ -15,16 +13,22 @@ public class Hybrid_AES_DES {
         DES ndDes = new DES();
         AES aes = new AES();
 
+        int[] mix = {7, 1, 3, 4, 6, 9, 2, 11, 15, 0, 8, 14, 12, 5, 13, 10};
+
         key = Utilities.md5(key);
+        String stDesKey = key.substring(16, 24);
+        String ndDesKey = key.substring(24);
         aes.setKey(key.substring(0, 16));
-        stDes.setKey(key.substring(16, 24));
-        ndDes.setKey(key.substring(24));
+        stDes.setKey(stDesKey);
+        ndDes.setKey(ndDesKey);
 
         String result = "";
         int len = cipher.length();
         byte[] cipher_DES_1 = stDes.encrypt(BYTES_DES.getBytes());
         byte[] cipher_DES_2 = ndDes.encrypt(BYTES_DES.getBytes());
         byte[] cipher_AES = BYTES_AES.getBytes();
+        byte[] stKey = stDesKey.getBytes();
+        byte[] ndKey = ndDesKey.getBytes();
 
         int divide = (len + 16) / 16000;
         divide = divide + 1;
@@ -64,9 +68,9 @@ public class Hybrid_AES_DES {
                     percent += 16;
                     for (int i = 0; i < 16; i++) {
                         if (i < 8) {
-                            cipher_AES[mix[i]] = cipher_DES_1[i];
+                            cipher_AES[mix[i]] = (byte) (cipher_DES_1[i] ^ ndKey[i]);
                         } else {
-                            cipher_AES[mix[i]] = cipher_DES_2[i - 8];
+                            cipher_AES[mix[i]] = (byte) (cipher_DES_2[i - 8] ^ stKey[i-8]);
                         }
                     }
                     arrResult[k] += aes.encrypt(Utilities.byteArrayToString(cipher_AES));
@@ -86,7 +90,7 @@ public class Hybrid_AES_DES {
                 while (len >= 16) {
                     FragmentDecrypt.percent_Decrypted = 100 - (oldLen - percent)*100/oldLen;
                     if (FragmentDecrypt.cancel) {
-                        break;
+                        return result;
                     }
                     String temp_cipher = divideCipher.substring(0, 16);
                     divideCipher = divideCipher.substring(16);
@@ -95,9 +99,9 @@ public class Hybrid_AES_DES {
                     cipher_AES = Utilities.stringToByteArray(aes.decrypt(temp_cipher));
                     for (int i = 0; i < 16; i++) {
                         if (i < 8) {
-                            cipher_DES_1[i] = cipher_AES[mix[i]];
+                            cipher_DES_1[i] = (byte) (cipher_AES[mix[i]] ^ ndKey[i]);
                         } else {
-                            cipher_DES_2[i - 8] = cipher_AES[mix[i]];
+                            cipher_DES_2[i - 8] = (byte) (cipher_AES[mix[i]] ^ stKey[i-8]);
                         }
                     }
                     arrResult[k] += (Utilities.byteArrayToString((stDes.decrypt(cipher_DES_1))));

@@ -143,7 +143,7 @@ public class HomePage extends AppCompatActivity {
 
     private void showActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setTitle("Home");
     }
 
     @Override
@@ -168,6 +168,7 @@ public class HomePage extends AppCompatActivity {
             startActivity(new Intent(HomePage.this, UserPage.class));
         }
         if(item.getItemId() == R.id.item_change) {
+            finish();
             startActivity(new Intent(HomePage.this, ChangePassword.class));
         }
         if(item.getItemId() == R.id.item_logout) {

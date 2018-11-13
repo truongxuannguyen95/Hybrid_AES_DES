@@ -68,7 +68,7 @@ public class ListViewKeys extends BaseAdapter {
         tvFileName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utilities.showAlertDialog("Key", key, myContext, false);
+                Utilities.showAlertDialog("Key", key, myContext, true);
             }
         });
 

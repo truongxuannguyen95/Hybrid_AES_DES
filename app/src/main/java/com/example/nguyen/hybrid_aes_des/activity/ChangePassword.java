@@ -1,12 +1,16 @@
 package com.example.nguyen.hybrid_aes_des.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -87,7 +91,7 @@ public class ChangePassword extends AppCompatActivity {
                                             edtOldPw.setText("");
                                             edt_stNewPw.setText("");
                                             edt_ndNewPw.setText("");
-                                            Utilities.showAlertDialog("Thông báo", "Đổi mật khẩu thành công", ChangePassword.this, true);
+                                            showAlertDialog();
                                         }
                                         else {
                                             Utilities.showAlertDialog("Thông báo", "Đổi mật khẩu thất bại\nCó vẻ đã xảy ra lỗi gì đó!", ChangePassword.this, false);
@@ -105,6 +109,29 @@ public class ChangePassword extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChangePassword.this);
+        builder.setTitle(Html.fromHtml("<font color='#3F51B5'>Thông báo</font>"));
+        builder.setMessage("Đổi mật khẩu thành công");
+        builder.setCancelable(false);
+        builder.setNegativeButton("Xác nhận", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                finish();
+                startActivity(new Intent(ChangePassword.this, HomePage.class));
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLUE);
+            }
+        });
+        alertDialog.show();
     }
 
 }

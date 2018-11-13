@@ -252,7 +252,6 @@ public class FragmentDecrypt extends Fragment {
                         }
                     } else {
                         if (ckbUseKeys.isChecked()) {
-
                             for (int i = 0; i < HomePage.listKeys.size(); i++) {
                                 key = HomePage.listKeys.get(i);
                                 key = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);

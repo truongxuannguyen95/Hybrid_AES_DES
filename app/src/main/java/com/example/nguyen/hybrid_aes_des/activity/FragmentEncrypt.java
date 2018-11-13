@@ -314,6 +314,8 @@ public class FragmentEncrypt extends Fragment {
                     btnRandom.setVisibility(View.GONE);
                     progressDialog.dismiss();
                     Utilities.showAlertDialog("Mã hóa thành công", "File mã hóa được lưu trong thư mục\n/Download/Encrypt", getContext(), true);
+                } else {
+                    temp.delete();
                 }
             }
         }

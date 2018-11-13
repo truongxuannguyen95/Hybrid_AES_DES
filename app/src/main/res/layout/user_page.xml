@@ -20,7 +20,7 @@
             android:layout_weight="2"
             android:textColor="#fff"
             android:textSize="36sp"
-            android:text="ENCRYPT DATA"
+            android:text="ENCRYPT FILE"
             android:textStyle="bold"
             android:fontFamily="cursive"
             android:gravity="center"
