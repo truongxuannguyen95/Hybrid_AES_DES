@@ -229,7 +229,7 @@ public class FragmentEncrypt extends Fragment {
         @Override
         protected String doInBackground(String... params) {
             ShowProgressDialog();
-            byte[] bytes = new byte[32768];
+            byte[] bytes = new byte[65536];
             int nRead;
             try {
                 InputStream is = getActivity().getContentResolver().openInputStream(uri);

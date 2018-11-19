@@ -1,5 +1,6 @@
 package com.example.nguyen.hybrid_aes_des.activity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -130,10 +131,7 @@ public class FragmentDecrypt extends Fragment {
                         ckbUseKeys.setChecked(false);
                     } else {
                         if (ckbUseKeys.isChecked()) {
-                            edtKeyDecrypt.setEnabled(false);
-                            edtKeyDecrypt.setText(null);
-                            edtKeyDecrypt.setError(null);
-                            edtKeyDecrypt.setBackgroundColor(Color.DKGRAY);
+                            showDialog();
                         } else {
                             edtKeyDecrypt.setEnabled(true);
                             final int sdk = android.os.Build.VERSION.SDK_INT;
@@ -148,6 +146,44 @@ public class FragmentDecrypt extends Fragment {
             }
         });
         return view;
+    }
+
+    private void showDialog() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog_input_password);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        Button btnOK = dialog.findViewById(R.id.btnOK);
+        Button btnCancel = dialog.findViewById(R.id.btnCancel);
+        final TextView tvReport = dialog.findViewById(R.id.tvReport);
+        final EditText edtCheckPwd = dialog.findViewById(R.id.edtCheckPwd);
+        TextView tvTitle = dialog.findViewById(R.id.tvTitle);
+        tvTitle.setText("Nhập mật khẩu sử dụng danh sách key");
+        btnOK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (edtCheckPwd.getText().toString().equals(FragmentLogin.pwd)) {
+                    edtKeyDecrypt.setEnabled(false);
+                    edtKeyDecrypt.setText(null);
+                    edtKeyDecrypt.setError(null);
+                    edtKeyDecrypt.setBackgroundColor(Color.DKGRAY);
+                    dialog.dismiss();
+                } else {
+                    if (edtCheckPwd.getText().toString().equals(""))
+                        tvReport.setText("Vui lòng nhập mật khẩu để sử dụng danh sách key");
+                    else
+                        tvReport.setText("Mật khẩu không đúng");
+                }
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ckbUseKeys.setChecked(false);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private void chooseFile() {
@@ -228,7 +264,7 @@ public class FragmentDecrypt extends Fragment {
 
         @Override
         protected String doInBackground(String... params) {
-            byte[] bytes = new byte[32768];
+            byte[] bytes = new byte[65536];
             int nRead;
             try {
                 InputStream is = getActivity().getContentResolver().openInputStream(uri);
@@ -244,31 +280,23 @@ public class FragmentDecrypt extends Fragment {
                     String oldKey = fileData.substring(0, 32);
                     key = edtKeyDecrypt.getText().toString();
                     key = key + "Nguyen@2018";
-                    if (UserPage.isOffile) {
+                    if (ckbUseKeys.isChecked()) {
+                        for (int i = 0; i < HomePage.listKeys.size(); i++) {
+                            key = HomePage.listKeys.get(i);
+                            key = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
+                            key = key.trim();
+                            String tempOldKey = Hybrid_AES_DES.decrypt(key, oldKey);
+                            String md5Key = Utilities.md5(key);
+                            if (tempOldKey.equals(md5Key)) {
+                                hasKey = true;
+                                break;
+                            }
+                        }
+                    } else {
                         String md5Key = Utilities.md5(key);
                         oldKey = Hybrid_AES_DES.decrypt(key, oldKey);
                         if (oldKey.equals(md5Key)) {
                             hasKey = true;
-                        }
-                    } else {
-                        if (ckbUseKeys.isChecked()) {
-                            for (int i = 0; i < HomePage.listKeys.size(); i++) {
-                                key = HomePage.listKeys.get(i);
-                                key = Hybrid_AES_DES.decrypt("TruongXuanNguyen", key);
-                                key = key.trim();
-                                String tempOldKey = Hybrid_AES_DES.decrypt(key, oldKey);
-                                String md5Key = Utilities.md5(key);
-                                if (tempOldKey.equals(md5Key)) {
-                                    hasKey = true;
-                                    break;
-                                }
-                            }
-                        } else {
-                            String md5Key = Utilities.md5(key);
-                            oldKey = Hybrid_AES_DES.decrypt(key, oldKey);
-                            if (oldKey.equals(md5Key)) {
-                                hasKey = true;
-                            }
                         }
                     }
                     if (hasKey) {

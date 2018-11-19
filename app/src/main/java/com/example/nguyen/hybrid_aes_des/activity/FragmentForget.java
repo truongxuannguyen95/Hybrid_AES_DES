@@ -69,13 +69,14 @@ public class FragmentForget extends Fragment {
                 if(Utilities.isOnline(getContext())) {
                     String email = edtEmail.getText().toString();
                     if (Utilities.isValidEmail(email)) {
-                        Utilities.showProgressDialog("Đang gửi mật khẩu mới", getContext());
+                        Utilities.showProgressDialog("Đang reset mật khẩu", getContext());
                         FirebaseAuth.getInstance().sendPasswordResetEmail(email)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         Utilities.dismissProgressDialog();
                                         if (task.isSuccessful()) {
+                                            edtEmail.setText("");
                                             Utilities.showAlertDialog("Thông báo", "Kiểm tra email để nhận mật khẩu mới", getContext(), true);
                                         } else {
                                             Utilities.showAlertDialog("Thông báo", "Email của bạn chưa được đăng ký", getContext(), false);

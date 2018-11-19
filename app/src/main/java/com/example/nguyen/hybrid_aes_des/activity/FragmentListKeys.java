@@ -121,6 +121,8 @@ public class FragmentListKeys extends Fragment {
                 listKeys.clear();
                 HomePage.listKeys.clear();
                 if (dataSnapshot.exists()) {
+                    tvEmpty.setText("Chưa có key nào");
+                    tvEmpty.setTextColor(Color.RED);
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         String key = data.getValue().toString();
                         String child = data.getKey().toString();
@@ -140,6 +142,7 @@ public class FragmentListKeys extends Fragment {
                     tvEmpty.setTextColor(Color.RED);
                     lvKeys.setEmptyView(tvEmpty);
                 }
+
             }
 
             @Override

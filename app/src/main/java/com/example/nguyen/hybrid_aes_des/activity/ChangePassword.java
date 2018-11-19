@@ -134,4 +134,9 @@ public class ChangePassword extends AppCompatActivity {
         alertDialog.show();
     }
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        startActivity(new Intent(ChangePassword.this, HomePage.class));
+    }
 }
