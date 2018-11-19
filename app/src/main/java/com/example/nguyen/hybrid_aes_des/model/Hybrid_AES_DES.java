@@ -23,95 +23,65 @@ public class Hybrid_AES_DES {
         secondDES.setKey(secondDESKey);
 
         String result = "";
+        byte [] arrayResult;
         int len = cipher.length();
-        byte[] cipher_DES_1 = firstDES.encrypt(BYTES_DES.getBytes());
-        byte[] cipher_DES_2 = secondDES.encrypt(BYTES_DES.getBytes());
+        byte[] cipher_FirstDES = firstDES.encrypt(BYTES_DES.getBytes());
+        byte[] cipher_SecondDES = secondDES.encrypt(BYTES_DES.getBytes());
         byte[] cipher_AES = BYTES_AES.getBytes();
         byte[] stKey = firstDESKey.getBytes();
         byte[] ndKey = secondDESKey.getBytes();
 
-        int divide = (len + 16) / 16000;
-        divide = divide + 1;
-        String[] arrResult = new String[divide];
-        for (int i = 0; i < divide; i++) {
-            arrResult[i] = "";
-        }
-        int percent = 0;
         //Mã hóa
         if (check) {
             while (len % 16 != 0) {
                 cipher += " ";
                 len = cipher.length();
             }
-            int oldLen = len;
-            for (int k = 0; k < divide; k++) {
-                String divideCipher = "";
-                if (k+1 == divide) {
-                    divideCipher = cipher;
-                } else {
-                    divideCipher = cipher.substring(0, 16000);
-                    cipher = cipher.substring(16000);
+            arrayResult = new byte[len];
+            for(int p=0; p<len/16; p++) {
+                FragmentEncrypt.percent_Encrypted = ((p+1)*16)*100/len;
+                if (FragmentEncrypt.cancel) {
+                    FragmentEncrypt.cancel = false;
+                    return result;
                 }
-                len = divideCipher.length();
-                while (len >= 16) {
-                    FragmentEncrypt.percent_Encrypted = 100 - (oldLen - percent)*100/oldLen;
-                    if (FragmentEncrypt.cancel) {
-                        FragmentEncrypt.cancel = false;
-                        return result;
+                String temp_cipher = cipher.substring(p*16, p*16 + 16);
+                cipher_FirstDES = firstDES.encrypt(Utilities.stringToByteArray(temp_cipher.substring(0, 8)));
+                cipher_SecondDES = secondDES.encrypt(Utilities.stringToByteArray(temp_cipher.substring(8)));
+                for (int i = 0; i < 16; i++) {
+                    if (i < 8) {
+                        cipher_AES[mix[i]] = (byte) (cipher_FirstDES[i] ^ ndKey[i]);
+                    } else {
+                        cipher_AES[mix[i]] = (byte) (cipher_SecondDES[i - 8] ^ stKey[i-8]);
                     }
-                    String temp_cipher = divideCipher.substring(0, 8);
-                    cipher_DES_1 = firstDES.encrypt(Utilities.stringToByteArray(temp_cipher));
-                    temp_cipher = divideCipher.substring(8, 16);
-                    cipher_DES_2 = secondDES.encrypt(Utilities.stringToByteArray(temp_cipher));
-                    divideCipher = divideCipher.substring(16);
-                    len = divideCipher.length();
-                    percent += 16;
-                    for (int i = 0; i < 16; i++) {
-                        if (i < 8) {
-                            cipher_AES[mix[i]] = (byte) (cipher_DES_1[i] ^ ndKey[i]);
-                        } else {
-                            cipher_AES[mix[i]] = (byte) (cipher_DES_2[i - 8] ^ stKey[i-8]);
-                        }
-                    }
-                    arrResult[k] += aes.encrypt(Utilities.byteArrayToString(cipher_AES));
                 }
+                byte[] partByte = aes.encrypt(Utilities.byteArrayToString(cipher_AES));
+                for(int b=0; b<16; b++)
+                    arrayResult[p*16+b] = partByte[b];
             }
         } else {  //Giải mã
-            int oldLen = len;
-            for (int k = 0; k < divide; k++) {
-                String divideCipher = "";
-                if (k + 1 == divide) {
-                    divideCipher = cipher;
-                } else {
-                    divideCipher = cipher.substring(0, 16000);
-                    cipher = cipher.substring(16000);
+            arrayResult = new byte[len];
+            for(int p=0; p<len/16; p++) {
+                FragmentDecrypt.percent_Decrypted = ((p+1)*16)*100/len;
+                if (FragmentDecrypt.cancel) {
+                    return result;
                 }
-                len = divideCipher.length();
-                while (len >= 16) {
-                    FragmentDecrypt.percent_Decrypted = 100 - (oldLen - percent)*100/oldLen;
-                    if (FragmentDecrypt.cancel) {
-                        return result;
+                String temp_cipher = cipher.substring(p*16, p*16 + 16);
+                cipher_AES = aes.decrypt(temp_cipher);
+                for (int i = 0; i < 16; i++) {
+                    if (i < 8) {
+                        cipher_FirstDES[i] = (byte) (cipher_AES[mix[i]] ^ ndKey[i]);
+                    } else {
+                        cipher_SecondDES[i - 8] = (byte) (cipher_AES[mix[i]] ^ stKey[i-8]);
                     }
-                    String temp_cipher = divideCipher.substring(0, 16);
-                    divideCipher = divideCipher.substring(16);
-                    len = divideCipher.length();
-                    percent += 16;
-                    cipher_AES = Utilities.stringToByteArray(aes.decrypt(temp_cipher));
-                    for (int i = 0; i < 16; i++) {
-                        if (i < 8) {
-                            cipher_DES_1[i] = (byte) (cipher_AES[mix[i]] ^ ndKey[i]);
-                        } else {
-                            cipher_DES_2[i - 8] = (byte) (cipher_AES[mix[i]] ^ stKey[i-8]);
-                        }
-                    }
-                    arrResult[k] += (Utilities.byteArrayToString((firstDES.decrypt(cipher_DES_1))));
-                    arrResult[k] += (Utilities.byteArrayToString((secondDES.decrypt(cipher_DES_2))));
                 }
+                String temp = (Utilities.byteArrayToString((firstDES.decrypt(cipher_FirstDES))));
+                temp += (Utilities.byteArrayToString((secondDES.decrypt(cipher_SecondDES))));
+                byte[] partByte = Utilities.stringToByteArray(temp);
+                for(int b=0; b<16; b++)
+                    arrayResult[p*16+b] = partByte[b];
             }
         }
-        for (int i = 0; i < divide; i++) {
-            result += arrResult[i];
-        }
+        result = Utilities.byteArrayToString(arrayResult);
         return result;
     }
 

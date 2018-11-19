@@ -301,7 +301,7 @@ public class AES {
         return temp;
     }
 
-    public String cryptAll(String data, int mode)  {
+    public byte [] cryptAll(String data, int mode)  {
         AES aes = this;
 
         int nParts = data.length() /16;
@@ -316,13 +316,13 @@ public class AES {
             for(int b=0; b<16; b++)
                 res[p*16+b] = partByte[b];
         }
-        return static_byteArrayToString(res);
+        return res;
     }
 
-    public String encrypt(String data) {
+    public byte [] encrypt(String data) {
         return cryptAll(data, 1);
     }
-    public String decrypt(String data) {
+    public byte [] decrypt(String data) {
         return cryptAll(data, 2);
     }
 
